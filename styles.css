@@ -2837,3 +2837,6 @@ button:focus-visible {
     padding: 14px 18px;
   }
 }
+.slide-content{
+    display:none !important;
+}
