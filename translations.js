@@ -258,9 +258,13 @@
   }
 
   function translateText(lang) {
+    document.querySelectorAll("[data-en][data-hi]").forEach(element => {
+      element.textContent = element.getAttribute("data-" + lang);
+    });
+
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
-        if (!node.data.trim() || node.parentElement?.closest("script, style, noscript, #languageToggle")) {
+        if (!node.data.trim() || node.parentElement?.closest("script, style, noscript, #languageToggle, [data-en][data-hi]")) {
           return NodeFilter.FILTER_REJECT;
         }
         return NodeFilter.FILTER_ACCEPT;
