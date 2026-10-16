@@ -2873,3 +2873,27 @@ button:focus-visible {
     font-size: 12px;
   }
 }
+
+/* Shared bilingual switch on secondary pages */
+.language-toggle-floating {
+  position: fixed;
+  z-index: 10000;
+  top: 16px;
+  right: 16px;
+  box-shadow: 0 5px 18px rgba(23, 54, 93, 0.18);
+}
+.secondary-page-back {
+  margin: 72px 16px 18px;
+}
+.secondary-page-back a {
+  color: #234d7b;
+  font-weight: 700;
+}
+body:has(.secondary-page-back) {
+  padding: 0 18px 40px;
+  line-height: 1.75;
+}
+body:has(.secondary-page-back) h1,
+body:has(.secondary-page-back) h2 {
+  color: #17365d;
+}
