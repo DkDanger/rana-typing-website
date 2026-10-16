@@ -2840,3 +2840,36 @@ button:focus-visible {
 .slide-content{
     display:none !important;
 }
+/* Header language switch */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.language-toggle {
+  padding: 7px 10px;
+  border: 1px solid #d8e0e8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #163b66;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.language-toggle:hover {
+  background: #edf4ff;
+}
+
+@media (max-width: 768px) {
+  .header-actions {
+    gap: 6px;
+  }
+
+  .language-toggle {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+}
