@@ -517,3 +517,48 @@ if (dropdownBtn && dropdownMenu) {
   });
 
 }
+// Rana Typing language switch
+(() => {
+  const button = document.getElementById("languageToggle");
+
+  if (!button) return;
+
+  function applyLanguage(lang) {
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll("[data-en][data-hi]")
+      .forEach(element => {
+        element.textContent =
+          element.getAttribute(`data-${lang}`);
+      });
+
+    button.textContent = lang === "en" ? "हिंदी" : "EN";
+    button.setAttribute(
+      "aria-label",
+      lang === "en"
+        ? "Switch to Hindi"
+        : "Switch to English"
+    );
+
+    try {
+      localStorage.setItem("ranaLanguage", lang);
+    } catch (error) {
+      // Language switching still works without storage.
+    }
+  }
+
+  let savedLanguage = "en";
+
+  try {
+    savedLanguage = localStorage.getItem("ranaLanguage") || "en";
+  } catch (error) {}
+
+  applyLanguage(savedLanguage);
+
+  button.addEventListener("click", () => {
+    const nextLanguage =
+      document.documentElement.lang === "en" ? "hi" : "en";
+
+    applyLanguage(nextLanguage);
+  });
+})();
