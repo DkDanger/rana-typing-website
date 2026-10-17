@@ -3350,3 +3350,88 @@ body:has(.secondary-page-back) h2 {
   .service-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
   .service-marquee-track { width: max-content; }
 }
+
+
+/* Requested alternating directions: Services left, CSC right, Extra Work left. */
+.service-marquee[data-direction="right"] .service-marquee-track {
+  animation-direction: reverse;
+}
+.service-marquee[data-direction="left"] .service-marquee-track {
+  animation-direction: normal;
+}
+.service-photo-card {
+  cursor: pointer;
+}
+.service-photo-card:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+.service-detail-dialog {
+  width: min(92vw, 520px);
+  max-width: 520px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: clamp(24px, 5vw, 36px);
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 24px 80px rgba(0,0,0,.28);
+}
+.service-detail-dialog::backdrop {
+  background: rgba(10, 18, 14, .66);
+  backdrop-filter: blur(4px);
+}
+.service-detail-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: 0;
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 30px;
+  cursor: pointer;
+}
+.service-detail-kicker {
+  display: block;
+  margin: 0 24px 10px 0;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+.service-detail-title {
+  margin: 0 0 14px;
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(1.4rem, 4vw, 1.9rem);
+  line-height: 1.25;
+}
+.service-detail-description {
+  color: var(--text-soft);
+  font-size: 15px;
+  line-height: 1.75;
+}
+.service-detail-note {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  color: var(--text-soft);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.service-detail-call {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 22px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  color: #fff;
+  background: var(--primary);
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform .2s ease, filter .2s ease;
+}
+.service-detail-call:hover { transform: translateY(-2px); filter: brightness(1.08); }
+@media (prefers-reduced-motion: reduce) {
+  .service-marquee[data-direction="right"] .service-marquee-track { animation-direction: normal; }
+}
