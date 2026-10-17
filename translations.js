@@ -241,7 +241,7 @@
   "Counter Statistics": "काउंटर आँकड़े",
   "Switch language": "भाषा बदलें",
   "Open navigation menu": "नेविगेशन मेनू खोलें",
-  "Close navigation menu": "नेविगेशन मेनू बंद करें"
+  "Close navigation menu": "नेविगेशन मेनू बंद करें",
 
   "Review key provisions of India's new criminal code.": "भारत की नई आपराधिक संहिता के प्रमुख प्रावधान देखें।",
   "Explore the criminal procedure framework and related sections.": "आपराधिक प्रक्रिया व्यवस्था और संबंधित धाराएँ देखें।",
