@@ -509,6 +509,9 @@
     "Call Now": "अभी कॉल करें",
     "Close": "बंद करें",
     "More details": "अधिक जानकारी",
+  "Extra Work": "अतिरिक्त कार्य",
+  "CSC": "CSC",
+  "Services": "सेवाएँ",
 }
   const originals = new WeakMap();
   const attributeOriginals = new WeakMap();

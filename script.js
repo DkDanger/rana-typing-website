@@ -781,7 +781,7 @@ if (dropdownBtn && dropdownMenu) {
   };
 
   document.querySelectorAll('.service-photo-card').forEach(card => {
-    card.setAttribute('tabindex', '0');
+    card.setAttribute('tabindex', card.closest('[aria-hidden="true"]') ? '-1' : '0');
     card.setAttribute('role', 'button');
     card.dataset.serviceKey = card.querySelector('h3')?.textContent.trim() || '';
   });
