@@ -422,8 +422,7 @@
     "Counter Statistics": "काउंटर आँकड़े",
     "Switch language": "भाषा बदलें",
     "Open navigation menu": "नेविगेशन मेनू खोलें",
-    "Close navigation menu": "नेविगेशन मेनू बंद करें"
-  
+    "Close navigation menu": "नेविगेशन मेनू बंद करें",
     "Services designed for": "आपकी ज़रूरतों के लिए",
     "everyday needs.": "रोज़मर्रा की ज़रूरतों के लिए सेवाएँ।",
     "Everyday typing, documentation, tax and business support.": "रोज़मर्रा की टाइपिंग, दस्तावेज़ीकरण, टैक्स और व्यावसायिक सहायता।",
