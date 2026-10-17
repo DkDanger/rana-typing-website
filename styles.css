@@ -3031,3 +3031,26 @@ body:has(.secondary-page-back) h2 {
 @media (prefers-reduced-motion: reduce) {
   .achievement-card, .achievement-arrow { transition: none; }
 }
+
+
+/* Compact transition from About to Achievements */
+.about-section {
+  padding-bottom: 56px;
+}
+
+.achievements-section {
+  padding-top: 56px;
+}
+
+.achievements-section .center-heading {
+  margin-bottom: 18px;
+}
+
+.achievements-section .center-heading p {
+  margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .about-section { padding-bottom: 40px; }
+  .achievements-section { padding-top: 40px; }
+}
