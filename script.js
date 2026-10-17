@@ -772,7 +772,7 @@ if (dropdownBtn && dropdownMenu) {
   const openCard = card => {
     const heading = card.querySelector('h3');
     const summary = card.querySelector('.service-photo-content p');
-    const key = heading?.textContent.trim() || '';
+    const key = card.dataset.serviceKey || heading?.textContent.trim() || '';
     const item = details[key];
     const lang = document.documentElement.lang === 'hi' ? 'hi' : 'en';
     title.textContent = lang === 'hi' ? (heading?.textContent || key) : key;
@@ -783,17 +783,22 @@ if (dropdownBtn && dropdownMenu) {
   document.querySelectorAll('.service-photo-card').forEach(card => {
     card.setAttribute('tabindex', '0');
     card.setAttribute('role', 'button');
-    card.addEventListener('click', event => {
-      if (event.target.closest('a')) event.preventDefault();
+    card.dataset.serviceKey = card.querySelector('h3')?.textContent.trim() || '';
+  });
+  /* Delegation also covers the seamless visual copies used by the moving carousel. */
+  document.addEventListener('click', event => {
+    const card = event.target.closest('.service-photo-card');
+    if (!card) return;
+    if (event.target.closest('a')) event.preventDefault();
+    openCard(card);
+  });
+  document.addEventListener('keydown', event => {
+    const card = event.target.closest('.service-photo-card');
+    if (!card || event.target !== card) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
       openCard(card);
-    });
-    card.addEventListener('keydown', event => {
-      if (event.target !== card) return;
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        openCard(card);
-      }
-    });
+    }
   });
 
   close?.addEventListener('click', () => dialog.close());
