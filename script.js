@@ -604,3 +604,37 @@ if (dropdownBtn && dropdownMenu) {
   position(false);
   schedule();
 })();
+
+
+/* Slow, seamless horizontal service card movement. Duplicate groups are decorative
+   for the loop; links in the original cards remain keyboard-accessible. */
+(() => {
+  const prefersReducedMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.service-marquee').forEach((marquee, index) => {
+    const track = marquee.querySelector('.service-marquee-track');
+    if (!track) return;
+    const originalGroup = track.querySelector('.service-marquee-group');
+    if (!originalGroup) return;
+    const count = originalGroup.children.length;
+    if (!count) return;
+
+    if (prefersReducedMotion) {
+      marquee.style.overflowX = 'auto';
+      track.style.animation = 'none';
+      return;
+    }
+
+    const duplicate = originalGroup.cloneNode(true);
+    duplicate.setAttribute('aria-hidden', 'true');
+    duplicate.querySelectorAll('a, button, input, select, textarea').forEach(el => {
+      el.setAttribute('tabindex', '-1');
+    });
+    duplicate.querySelectorAll('img').forEach(img => { img.setAttribute('alt', ''); });
+    track.appendChild(duplicate);
+
+    /* Longer durations make the cards glide slowly rather than jump between slides. */
+    const durations = [88, 112, 82];
+    track.style.setProperty('--service-marquee-duration', (durations[index] || 90) + 's');
+  });
+})();

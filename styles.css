@@ -3187,3 +3187,166 @@ body:has(.secondary-page-back) h2 {
 @media (prefers-reduced-motion: reduce) {
   .golden-marquee-track { animation-duration: 60s; }
 }
+
+
+/* =========================================
+   SERVICES / CSC / EXTRA WORK — SLOW PHOTO MARQUEES
+   Uses existing theme colours to preserve the website design.
+========================================= */
+.service-category {
+  margin-top: 54px;
+  min-width: 0;
+}
+.service-category-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.service-category-heading h3 {
+  margin-top: 5px;
+  color: var(--primary);
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(1.55rem, 2.6vw, 2rem);
+  line-height: 1.2;
+}
+.service-category-heading p {
+  max-width: 660px;
+  margin-top: 8px;
+  color: var(--text-soft);
+  font-size: 13px;
+}
+.service-csc-id {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 2px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.service-csc-id span {
+  color: var(--text-soft);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+.service-csc-id strong {
+  color: var(--primary);
+  font-size: 16px;
+  letter-spacing: .04em;
+}
+.service-marquee {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 6px 2px 24px;
+  touch-action: pan-y;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 2%, #000 98%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 2%, #000 98%, transparent);
+}
+.service-marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: serviceMarqueeMove var(--service-marquee-duration, 85s) linear infinite;
+}
+.service-marquee-group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: stretch;
+  gap: 18px;
+  padding-right: 18px;
+}
+.service-photo-card {
+  display: flex;
+  flex: 0 0 270px;
+  flex-direction: column;
+  min-height: 365px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+.service-photo-card:hover {
+  transform: translateY(-4px);
+}
+.service-photo {
+  display: block;
+  width: 100%;
+  height: 158px;
+  flex: 0 0 158px;
+  object-fit: cover;
+  background: var(--surface-soft);
+}
+.service-photo-content {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 18px 18px 16px;
+}
+.service-photo-content .service-number {
+  top: 12px;
+  right: 14px;
+  color: var(--text-soft);
+}
+.service-photo-content h3 {
+  max-width: 90%;
+  font-size: 16px;
+  line-height: 1.35;
+}
+.service-photo-content p {
+  margin-top: 9px;
+  color: var(--text-soft);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.service-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 14px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+}
+.service-card-link:hover {
+  color: var(--primary-light);
+}
+.service-availability-note {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  font-size: 11px;
+  text-align: center;
+}
+@keyframes serviceMarqueeMove {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.service-marquee:hover .service-marquee-track,
+.service-marquee:focus-within .service-marquee-track {
+  animation-play-state: paused;
+}
+@media (max-width: 768px) {
+  .service-category { margin-top: 38px; }
+  .service-category-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .service-csc-id { align-self: flex-start; }
+  .service-photo-card { flex-basis: 235px; min-height: 350px; }
+  .service-photo { height: 138px; flex-basis: 138px; }
+  .service-marquee-group { gap: 13px; padding-right: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .service-marquee-track { animation: none; transform: none; }
+  .service-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .service-marquee-track { width: max-content; }
+}
