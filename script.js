@@ -317,6 +317,43 @@ sections.forEach(section => {
    PREMIUM GALLERY SLIDER
 ========================================= */
 
+/* Small image preview shared by Achievements and Rana Typing in Pictures. */
+function openPhotoViewer(image) {
+  const dialog = document.getElementById("photoViewerDialog");
+  const preview = document.getElementById("photoViewerImage");
+  const caption = document.getElementById("photoViewerCaption");
+  if (!dialog || !preview || !image) return;
+
+  preview.src = image.currentSrc || image.src;
+  preview.alt = image.alt || "Rana Typing photo";
+  if (caption) caption.textContent = image.alt || "";
+  if (!dialog.open) dialog.showModal();
+}
+
+(() => {
+  const dialog = document.getElementById("photoViewerDialog");
+  const close = document.getElementById("photoViewerClose");
+  if (!dialog) return;
+
+  close?.addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", event => {
+    if (event.target === dialog) dialog.close();
+  });
+
+  document.querySelectorAll(".premium-gallery .premium-slide img").forEach(image => {
+    image.setAttribute("tabindex", "0");
+    image.setAttribute("role", "button");
+    image.setAttribute("aria-label", "Open photo: " + (image.alt || "Rana Typing photo"));
+    image.addEventListener("click", () => openPhotoViewer(image));
+    image.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openPhotoViewer(image);
+      }
+    });
+  });
+})();
+
 const slides = document.querySelectorAll(".premium-slide");
 const dots = document.querySelectorAll(".gallery-dot");
 
@@ -594,11 +631,9 @@ if (dropdownBtn && dropdownMenu) {
   gallery.querySelector('[data-achievement-next]')?.addEventListener('click', () => move(1));
   track.addEventListener('click', event => {
     const card = event.target.closest('.achievement-card');
-    if (!card || card === slides[current]) return;
-    const active = ((current - count) % count + count) % count;
-    const target = Number(card.dataset.logicalIndex);
-    const ahead = (target - active + count) % count;
-    move(ahead <= count / 2 ? 1 : -1);
+    if (!card) return;
+    const image = card.querySelector('img');
+    if (image) openPhotoViewer(image);
   });
   document.addEventListener('visibilitychange', schedule);
   position(false);
