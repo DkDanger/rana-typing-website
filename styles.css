@@ -3435,3 +3435,80 @@ body:has(.secondary-page-back) h2 {
 @media (prefers-reduced-motion: reduce) {
   .service-marquee[data-direction="right"] .service-marquee-track { animation-direction: normal; }
 }
+
+
+/* Small, responsive photo preview for Achievements and the main gallery. */
+.photo-viewer-dialog {
+  position: fixed;
+  width: min(88vw, 760px);
+  max-width: 760px;
+  max-height: 86dvh;
+  padding: 34px 14px 12px;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 16px;
+  margin: auto;
+  overflow: hidden;
+  background: #101411;
+  color: #fff;
+  box-shadow: 0 24px 80px rgba(0,0,0,.48);
+}
+.photo-viewer-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.photo-viewer-dialog::backdrop {
+  background: rgba(7,12,9,.78);
+  backdrop-filter: blur(4px);
+}
+.photo-viewer-dialog img {
+  display: block;
+  width: 100%;
+  height: min(68dvh, 620px);
+  object-fit: contain;
+  border-radius: 8px;
+}
+.photo-viewer-close {
+  position: absolute;
+  top: 3px;
+  right: 10px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.13);
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+.photo-viewer-caption {
+  max-width: 100%;
+  padding: 8px 8px 0;
+  color: rgba(255,255,255,.86);
+  font-size: 12px;
+  text-align: center;
+}
+.achievement-card,
+.premium-gallery .premium-slide img {
+  cursor: zoom-in;
+}
+.premium-gallery .premium-slide img:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -4px;
+}
+@media (max-width: 600px) {
+  .photo-viewer-dialog {
+    width: 94vw;
+    max-width: 94vw;
+    max-height: 82dvh;
+    padding: 38px 8px 8px;
+    border-radius: 12px;
+  }
+  .photo-viewer-dialog img {
+    height: 66dvh;
+    max-height: 66dvh;
+  }
+}
