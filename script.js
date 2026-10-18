@@ -344,7 +344,7 @@ function openPhotoViewer(image) {
     image.setAttribute("tabindex", "0");
     image.setAttribute("role", "button");
     image.setAttribute("aria-label", "Open photo: " + (image.alt || "Rana Typing photo"));
-    image.addEventListener("click", () => openPhotoViewer(image));
+    image.closest(".premium-slide")?.addEventListener("click", () => openPhotoViewer(image));
     image.addEventListener("keydown", event => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
