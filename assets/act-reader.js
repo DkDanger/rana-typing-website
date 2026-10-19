@@ -46,7 +46,7 @@
     const viewRect = byId('actPdfViewport').getBoundingClientRect();
     const pageRect = pageNode.getBoundingClientRect();
     const fraction = clamp((viewRect.top + 8 - pageRect.top) / Math.max(1, pageRect.height), 0, 0.98);
-    return { page: state.page, fraction, progress: (state.page - 1 + fraction) / Math.max(1, state.pageCount) };
+    return { page: state.page, fraction };
   }
 
   async function ensurePdfJs() {
