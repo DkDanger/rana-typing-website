@@ -309,8 +309,8 @@
   }
 
   document.querySelectorAll('[data-act]').forEach(button => button.addEventListener('click', () => selectAct(button.dataset.act)));
-  byId('actPagePrevious').addEventListener('click', () => scrollToPage(state.page - 1));
-  byId('actPageNext').addEventListener('click', () => scrollToPage(state.page + 1));
+  byId('actPagePrevious').addEventListener('click', () => scrollToPage(Math.max(1, state.page - 10)));
+  byId('actPageNext').addEventListener('click', () => scrollToPage(Math.min(state.pageCount, state.page + 10)));
   byId('actPageInput').addEventListener('change', event => scrollToPage(event.currentTarget.value));
   byId('actPageInput').addEventListener('keydown', event => {
     if (event.key === 'Enter') {
