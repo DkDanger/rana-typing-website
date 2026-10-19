@@ -4270,3 +4270,39 @@ body:has(.secondary-page-back) h2 {
     outline-offset: 4px;
   }
 }
+
+
+/* Floating Android app download button for mobile */
+.floating-app-download { display: none; }
+@media (max-width: 760px) {
+  .floating-app-download {
+    position: fixed;
+    left: 12px;
+    right: 80px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index: 1500;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 0 14px;
+    border: 1px solid rgba(255,255,255,.8);
+    border-radius: 16px;
+    background: linear-gradient(135deg, #35df78 0%, #13b85a 52%, #08783c 100%);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 6px 0 #075e31, 0 12px 22px rgba(0,0,0,.22), inset 0 2px 2px rgba(255,255,255,.4);
+    transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .floating-app-download svg { width: 24px; height: 24px; flex: 0 0 24px; fill: currentColor; filter: drop-shadow(0 2px 1px rgba(0,0,0,.2)); }
+  .floating-app-download span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .floating-app-download:hover { transform: translateY(-2px); filter: brightness(1.05); }
+  .floating-app-download:active { transform: translateY(4px); box-shadow: 0 2px 0 #075e31, 0 5px 12px rgba(0,0,0,.2), inset 0 1px 1px rgba(255,255,255,.35); }
+  .floating-app-download:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+}
