@@ -1,0 +1,35 @@
+name: Import the local Act library assets
+on:
+  push:
+    branches:
+      - main
+permissions:
+  contents: write
+jobs:
+  import-act-library:
+    if: ${{ github.event.head_commit.message == 'Import local Act reader and PDF files' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this site
+        uses: actions/checkout@v4
+      - name: Copy the Act PDFs and reader assets from the reference site
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_dir="$RUNNER_TEMP/rana-typing-reference"
+          git clone --depth=1 https://github.com/DkDanger/rana-typing-website2.git "$source_dir"
+          mkdir -p assets/acts
+          cp "$source_dir"/assets/acts/*.pdf assets/acts/
+          cp "$source_dir"/assets/act-reader.js assets/act-reader.js
+          rm -rf assets/pdfjs
+          cp -R "$source_dir"/assets/pdfjs assets/pdfjs
+          cat > assets/acts/README.md <<'EOF'
+          The eight original Hindi and English Act PDFs in this folder are copied from the Rana Typing reference library at https://dkdanger.github.io/rana-typing-website2/?lang=en#acts.
+          The PDF.js reader runtime in ../pdfjs/ is included with its upstream license files.
+          EOF
+          git rm .github/workflows/import-act-pdf-library.yml
+          git add assets/acts/*.pdf assets/acts/README.md assets/act-reader.js assets/pdfjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Add local bilingual Act PDFs and PDF.js reader"
+          git push origin HEAD:main

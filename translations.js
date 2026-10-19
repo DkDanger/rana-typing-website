@@ -504,6 +504,27 @@
     "Ask us about availability of a carpenter for furniture and woodwork.": "फर्नीचर और लकड़ी के काम के लिए बढ़ई की उपलब्धता पूछें।",
     "Photos are illustrative. Service availability, eligibility, official fees and processing requirements should be confirmed before proceeding.": "फोटो केवल उदाहरण के लिए हैं। आगे बढ़ने से पहले सेवा की उपलब्धता, पात्रता, आधिकारिक शुल्क और प्रक्रिया की पुष्टि करें।",
     "LEGAL REFERENCE LIBRARY": "कानूनी संदर्भ पुस्तकालय",
+  "Back to top": "ऊपर जाएँ",
+  "Zoom in": "बड़ा करें",
+  "Zoom out": "छोटा करें",
+  "Download PDF": "PDF डाउनलोड करें",
+  "Page": "पृष्ठ",
+  "Next": "अगला",
+  "Previous": "पिछला",
+  "Open PDF in browser reader": "PDF को ब्राउज़र में खोलें",
+  "For the in-page reader, open this site from GitHub Pages or a local web server. A file:// page can open the PDF in the browser’s reader, but cannot keep the in-page reading position.": "इस पेज के अंदर PDF पढ़ने के लिए वेबसाइट को GitHub Pages या वेब सर्वर से खोलें। file:// से PDF ब्राउज़र में खुलेगी, लेकिन पढ़ने की जगह सुरक्षित नहीं रह पाएगी।",
+  "The PDF could not be loaded. Check your connection and try again.": "PDF नहीं खुल पाई। इंटरनेट जाँचकर फिर प्रयास करें।",
+  "Loading the Act PDF…": "अधिनियम PDF लोड हो रही है…",
+  "Switch the website language to change this PDF between Hindi and English without losing your reading position.": "पढ़ने की जगह बदले बिना PDF को हिंदी या अंग्रेज़ी में देखने के लिए वेबसाइट की भाषा बदलें।",
+  "Choose an Act from the list to open it here.": "यहाँ खोलने के लिए सूची से अधिनियम चुनें।",
+  "IPC · Hindi 100 pages · English 268 pages": "IPC · हिंदी 100 पृष्ठ · अंग्रेज़ी 268 पृष्ठ",
+  "BSA · Hindi 61 pages · English 54 pages": "BSA · हिंदी 61 पृष्ठ · अंग्रेज़ी 54 पृष्ठ",
+  "BNSS · Hindi 319 pages · English 279 pages": "BNSS · हिंदी 319 पृष्ठ · अंग्रेज़ी 279 पृष्ठ",
+  "BNS · Hindi 145 pages · English 112 pages": "BNS · हिंदी 145 पृष्ठ · अंग्रेज़ी 112 पृष्ठ",
+  "Read Act below ↓": "नीचे अधिनियम पढ़ें ↓",
+  "Explore the key Indian legal codes. Open the library to read the available Hindi or English Act PDFs.": "प्रमुख भारतीय अधिनियम और कानूनी धाराएँ यहाँ पढ़ें। सूची से अधिनियम चुनकर नीचे PDF खोलें।",
+  "Legal Sections.": "कानूनी धाराएँ।",
+  "Indian Acts & ": "भारतीय अधिनियम और ",
     "Bharatiya Nyaya Sanhita, 2023": "भारतीय न्याय संहिता, 2023",
     "Review key provisions of India's new criminal code.": "भारत की नई आपराधिक संहिता के प्रमुख प्रावधान देखें।",
     "Bharatiya Nagarik Suraksha Sanhita, 2023": "भारतीय नागरिक सुरक्षा संहिता, 2023",
@@ -607,6 +628,7 @@
     lang = lang === "hi" ? "hi" : "en";
     document.documentElement.lang = lang;
     translateText(lang);
+    if (window.setActReaderLanguage) window.setActReaderLanguage(lang);
     const button = ensureButton();
     button.textContent = lang === "en" ? "हिंदी" : "English";
     button.setAttribute("aria-label", lang === "en" ? "हिंदी में बदलें" : "Switch to English");

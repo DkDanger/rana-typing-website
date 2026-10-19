@@ -32,7 +32,7 @@
     rel="stylesheet"
   >
 
- <link rel="stylesheet" href="styles.css?v=20261019c">
+ <link rel="stylesheet" href="styles.css?v=20261019d">
 
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -390,22 +390,47 @@
           <p>Explore the key Indian legal codes. Open the library to read the available Hindi or English Act PDFs.</p>
         </div>
         <div class="legal-reference-grid">
-          <a class="legal-reference-card reveal" href="https://dkdanger.github.io/rana-typing-website2/?lang=en#acts" target="_blank" rel="noopener noreferrer">
+          <a class="legal-reference-card reveal" href="#acts" data-act="bns">
             <div class="legal-reference-photo"><img src="https://dkdanger.github.io/rana-typing-website2/assets/legal-drafting.png" alt="Legal document drafting and reference materials" loading="lazy"><span>BNS</span></div>
-            <div class="legal-reference-copy"><h3>Bharatiya Nyaya Sanhita, 2023</h3><p>Explore provisions of the new Indian criminal law.</p><span class="legal-reference-link">Open Legal Library ↗</span></div>
+            <div class="legal-reference-copy act-copy"><h3><strong>Bharatiya Nyaya Sanhita, 2023</strong></h3><p>Explore provisions of the new Indian criminal law.</p><small class="act-card-meta">BNS · Hindi 145 pages · English 112 pages</small><span class="legal-reference-link">Read Act below ↓</span></div>
           </a>
-          <a class="legal-reference-card reveal" href="https://dkdanger.github.io/rana-typing-website2/?lang=en#acts" target="_blank" rel="noopener noreferrer">
+          <a class="legal-reference-card reveal" href="#acts" data-act="bnss">
             <div class="legal-reference-photo"><img src="https://dkdanger.github.io/rana-typing-website2/assets/legal-drafting-hindi.png" alt="Hindi legal drafting and reference documents" loading="lazy"><span>BNSS</span></div>
-            <div class="legal-reference-copy"><h3>Bharatiya Nagarik Suraksha Sanhita, 2023</h3><p>Find procedural provisions and legal references.</p><span class="legal-reference-link">Open Legal Library ↗</span></div>
+            <div class="legal-reference-copy act-copy"><h3><strong>Bharatiya Nagarik Suraksha Sanhita, 2023</strong></h3><p>Find procedural provisions and legal references.</p><small class="act-card-meta">BNSS · Hindi 319 pages · English 279 pages</small><span class="legal-reference-link">Read Act below ↓</span></div>
           </a>
-          <a class="legal-reference-card reveal" href="https://dkdanger.github.io/rana-typing-website2/?lang=en#acts" target="_blank" rel="noopener noreferrer">
+          <a class="legal-reference-card reveal" href="#acts" data-act="bsa">
             <div class="legal-reference-photo"><img src="https://dkdanger.github.io/rana-typing-website2/assets/csc-documents.jpg" alt="Official documents and records" loading="lazy"><span>BSA</span></div>
-            <div class="legal-reference-copy"><h3>Bharatiya Sakshya Adhiniyam, 2023</h3><p>Review the law relating to evidence and proof.</p><span class="legal-reference-link">Open Legal Library ↗</span></div>
+            <div class="legal-reference-copy act-copy"><h3><strong>Bharatiya Sakshya Adhiniyam, 2023</strong></h3><p>Review the law relating to evidence and proof.</p><small class="act-card-meta">BSA · Hindi 61 pages · English 54 pages</small><span class="legal-reference-link">Read Act below ↓</span></div>
           </a>
-          <a class="legal-reference-card reveal" href="https://dkdanger.github.io/rana-typing-website2/?lang=en#acts" target="_blank" rel="noopener noreferrer">
+          <a class="legal-reference-card reveal" href="#acts" data-act="ipc">
             <div class="legal-reference-photo"><img src="https://dkdanger.github.io/rana-typing-website2/assets/identity-cards.png" alt="Government identity and legal documentation" loading="lazy"><span>IPC</span></div>
-            <div class="legal-reference-copy"><h3>Indian Penal Code, 1860</h3><p>Access the reference listing for the earlier penal code.</p><span class="legal-reference-link">Open Legal Library ↗</span></div>
+            <div class="legal-reference-copy act-copy"><h3><strong>Indian Penal Code, 1860</strong></h3><p>Access the reference listing for the earlier penal code.</p><small class="act-card-meta">IPC · Hindi 100 pages · English 268 pages</small><span class="legal-reference-link">Read Act below ↓</span></div>
           </a>
+        </div>
+        <div class="act-reader-card" id="acts" aria-label="Act PDF reader">
+          <div id="actReaderEmpty" class="act-reader-empty">
+            <span class="material" aria-hidden="true">menu_book</span>
+            <p>Choose an Act from the list to open it here.</p>
+            <small>Switch the website language to change this PDF between Hindi and English without losing your reading position.</small>
+          </div>
+          <div id="actReaderLoading" class="act-reader-message" role="status" hidden><span class="material" aria-hidden="true">hourglass_top</span><span>Loading the Act PDF…</span></div>
+          <div id="actReaderError" class="act-reader-message" role="alert" hidden><span class="material" aria-hidden="true">error_outline</span><span>The PDF could not be loaded. Check your connection and try again.</span></div>
+          <div id="actReaderOffline" class="act-reader-offline" hidden><p>For the in-page reader, open this site from GitHub Pages or a local web server. A file:// page can open the PDF in the browser’s reader, but cannot keep the in-page reading position.</p><a id="actOpenPdf" class="btn btn-primary" href="#" target="_blank" rel="noopener">Open PDF in browser reader</a></div>
+          <div id="actPdfReader" class="act-reader" hidden>
+            <div class="act-reader-toolbar">
+              <div class="act-reader-titlebar">
+                <h3 id="actReaderTitle"></h3>
+                <label class="act-page-control"><span>Page</span><input id="actPageInput" type="number" min="1" value="1" inputmode="numeric"><span>/</span><span id="actPageTotal">0</span></label>
+              </div>
+              <div class="act-reader-controls">
+                <button id="actPagePrevious" type="button" class="reader-control">Previous</button>
+                <button id="actPageNext" type="button" class="reader-control">Next</button>
+                <button id="actZoomOut" type="button" class="reader-control reader-zoom" aria-label="Zoom out">A−</button><span id="actZoomValue" class="reader-zoom-value">100%</span><button id="actZoomIn" type="button" class="reader-control reader-zoom" aria-label="Zoom in">A+</button>
+                <a id="actPdfDownload" class="reader-download" href="#" download>Download PDF</a>
+              </div>
+            </div>
+            <div id="actPdfViewport" class="act-pdf-viewport" aria-label="PDF reader"><div id="actPdfPages" class="act-pdf-pages"></div></div>
+          </div>
         </div>
         <p class="legal-reference-note">For reference and awareness only. Always check the current official law and amendments for your matter.</p>
       </div>
@@ -1029,13 +1054,7 @@
         © <span id="currentYear"></span> Rana Typing. All rights reserved.
       </p>
 
-      <button
-  type="button"
-  class="back-to-top"
-  id="backToTop"
->
-  Back to top ↑
-</button>
+      <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5 3.5 11h5.25v10.5h6.5V11h5.25z"/></svg></button>
 
     </div>
 
@@ -1098,7 +1117,8 @@
       <p id="photoViewerCaption" class="photo-viewer-caption"></p>
     </dialog>
 
-<script src="script.js?v=20261019b"></script>
-<script src="translations.js?v=20261019b"></script>
+<script src="script.js?v=20261019c"></script>
+<script src="assets/act-reader.js?v=20261019a"></script>
+<script src="translations.js?v=20261019c"></script>
 </body>
 </html>

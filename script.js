@@ -857,3 +857,41 @@ if (dropdownBtn && dropdownMenu) {
     window.location.href = 'upi://pay?' + params.toString();
   });
 })();
+
+
+
+/* Warm the local Act PDFs after the page has fully loaded, without navigating away. */
+(() => {
+  const actPdfFiles = [
+    'assets/acts/BNS-2023-english.pdf', 'assets/acts/BNS-2023-hindi.pdf',
+    'assets/acts/BNSS-2023-english.pdf', 'assets/acts/BNSS-2023-hindi.pdf',
+    'assets/acts/BSA-2023-english.pdf', 'assets/acts/BSA-2023-hindi.pdf',
+    'assets/acts/IPC-1860-english.pdf', 'assets/acts/IPC-1860-hindi.pdf'
+  ];
+  const warm = async () => {
+    if (!('caches' in window) || !navigator.onLine) return;
+    try {
+      const cache = await caches.open('rana-acts-pdf-cache-v1');
+      for (const path of actPdfFiles) {
+        try {
+          const request = new Request(new URL(path, location.href).href);
+          if (await cache.match(request)) continue;
+          const response = await fetch(request, { cache: 'force-cache', priority: 'low' });
+          if (response.ok) await cache.put(request, response);
+        } catch (error) {
+          if (error?.name === 'QuotaExceededError') break;
+        }
+      }
+    } catch (_) {}
+  };
+  const start = () => window.setTimeout(() => { void warm(); }, 1800);
+  window.addEventListener('load', () => {
+    if ('requestIdleCallback' in window) window.requestIdleCallback(start, { timeout: 20000 });
+    else window.setTimeout(start, 5000);
+  }, { once: true });
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('assets/act-pdf-cache-sw.js', { scope: 'assets/' }).catch(() => {});
+    }, { once: true });
+  }
+})();
