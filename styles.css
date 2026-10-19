@@ -3967,3 +3967,24 @@ body:has(.secondary-page-back) h2 {
 @media (max-width: 620px) {
   .legal-reference-grid { grid-template-columns: 1fr; gap: 16px; }
 }
+
+
+/* Fit the supplied payment QR artwork snugly without stretching or cropping it. */
+.payment-qr-card {
+  width: fit-content;
+  max-width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+.payment-qr {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+  border-radius: 0;
+}
+@media (max-width: 760px) {
+  .payment-qr { max-height: min(62vh, 420px); }
+}
