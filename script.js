@@ -969,6 +969,7 @@ if (dropdownBtn && dropdownMenu) {
     let duplicate = null;
     let paused = false;
     let resumeTimer;
+    let arrowFrame = null;
 
     const update = () => {
       const overflow = group.scrollWidth > viewport.clientWidth + 1;
@@ -1003,14 +1004,14 @@ if (dropdownBtn && dropdownMenu) {
       clearTimeout(resumeTimer);
       resumeTimer = setTimeout(() => {
         paused = false;
-        track.style.animationPlayState = '';
+        if (arrowFrame === null) track.style.animationPlayState = '';
       }, 1200);
     };
     row.addEventListener('pointerenter', pause);
     row.addEventListener('pointerleave', () => {
       if (!row.contains(document.activeElement)) {
         paused = false;
-        track.style.animationPlayState = '';
+        if (arrowFrame === null) track.style.animationPlayState = '';
       }
     });
     row.addEventListener('focusin', pause);
@@ -1033,10 +1034,26 @@ if (dropdownBtn && dropdownMenu) {
         const visualDirection = getComputedStyle(track).animationDirection === 'reverse' ? 1 : -1;
         const wantedDirection = Number(button.dataset.officialScroll) < 0 ? -1 : 1;
         const delta = duration * step / group.getBoundingClientRect().width * wantedDirection / visualDirection;
-        const keepPaused = paused || animation.playState === 'paused';
-        animation.pause();
-        animation.currentTime = ((Number(animation.currentTime || 0) + delta) % duration + duration) % duration;
-        if (!keepPaused) animation.play();
+        if (arrowFrame !== null) cancelAnimationFrame(arrowFrame);
+        const from = Number(animation.currentTime || 0);
+        const startTime = performance.now();
+        const slideDuration = 480;
+        track.style.animationPlayState = 'paused';
+        const glideArrow = now => {
+          const progress = Math.min(1, (now - startTime) / slideDuration);
+          const eased = progress < .5
+            ? 2 * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+          const currentTime = from + delta * eased;
+          animation.currentTime = ((currentTime % duration) + duration) % duration;
+          if (progress < 1) {
+            arrowFrame = requestAnimationFrame(glideArrow);
+          } else {
+            arrowFrame = null;
+            if (!paused) track.style.animationPlayState = '';
+          }
+        };
+        arrowFrame = requestAnimationFrame(glideArrow);
       });
     });
 
