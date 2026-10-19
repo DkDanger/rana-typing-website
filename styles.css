@@ -4220,3 +4220,9 @@ body:has(.secondary-page-back) h2 {
   color: inherit;
   margin-inline-start: .42em;
 }
+
+
+/* Keep exactly the source text's single normal space before the highlighted title phrase. */
+.legal-reference-library .center-heading h2 span {
+  margin-inline-start: 0;
+}
