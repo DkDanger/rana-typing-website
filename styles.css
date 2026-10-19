@@ -4034,3 +4034,40 @@ body:has(.secondary-page-back) h2 {
     max-height: min(62vh, 420px);
   }
 }
+
+
+/* Continuous, seamless official portal card rows, matching the service marquees. */
+.official-links-viewport {
+  overflow: hidden;
+  scroll-snap-type: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 5px;
+  touch-action: pan-y;
+}
+.official-links-viewport::-webkit-scrollbar { display: none; }
+.official-links-track {
+  display: flex;
+  width: max-content;
+  gap: 0;
+  will-change: transform;
+}
+.official-links-group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: stretch;
+  gap: 16px;
+  padding-right: 16px;
+}
+.official-links-group > .official-link-card { flex: 0 0 clamp(245px, 24vw, 292px); }
+@keyframes officialCardsMove {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+@media (max-width: 760px) {
+  .official-links-group { gap: 12px; padding-right: 12px; }
+  .official-links-group > .official-link-card { flex-basis: min(78vw, 292px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .official-links-track { animation: none !important; }
+}
