@@ -1163,16 +1163,78 @@ if (dropdownBtn && dropdownMenu) {
 /* Indian Acts cards remain fixed in place; no carousel animation. */
 
 
-/* Let the glowing hero R drift to gentle, randomly chosen angles. */
+/* Bounce the glowing hero R around the circular orb with varied, smooth motion. */
 (() => {
   const mark = document.querySelector('.hero-orb-mark');
-  if (!mark || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const drift = () => {
-    const angle = Math.random() * 50 - 25;
-    const duration = 1500 + Math.random() * 1300;
-    mark.style.transitionDuration = duration + 'ms';
-    mark.style.transform = 'rotate(' + angle.toFixed(1) + 'deg)';
-    window.setTimeout(drift, duration + 500 + Math.random() * 1300);
+  const card = mark?.closest('.hero-card');
+  if (!mark || !card || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let x = 0;
+  let y = 0;
+  let vx = 0;
+  let vy = 0;
+  let rotation = 0;
+  let spinDirection = Math.random() < 0.5 ? -1 : 1;
+  let bounds;
+  let lastTime = 0;
+
+  const measure = () => {
+    const orb = getComputedStyle(card, '::before');
+    const diameter = parseFloat(orb.width) || 300;
+    const orbRadius = diameter / 2;
+    const centerX = card.clientWidth - (parseFloat(orb.right) || 0) - orbRadius;
+    const centerY = (parseFloat(orb.top) || 0) + orbRadius;
+    const markRadius = Math.max(mark.offsetWidth, mark.offsetHeight) * 0.45;
+    const travelRadius = Math.max(0, orbRadius - markRadius - 5);
+    bounds = { centerX, centerY, travelRadius };
+    const distance = Math.hypot(x, y);
+    if (distance > travelRadius && distance > 0) {
+      x = x / distance * travelRadius;
+      y = y / distance * travelRadius;
+    }
   };
-  window.setTimeout(drift, 800);
+
+  measure();
+  const initialAngle = Math.random() * Math.PI * 2;
+  const speed = 58 + Math.random() * 24;
+  vx = Math.cos(initialAngle) * speed;
+  vy = Math.sin(initialAngle) * speed;
+
+  const resizeObserver = 'ResizeObserver' in window
+    ? new ResizeObserver(measure)
+    : null;
+  resizeObserver?.observe(card);
+  window.addEventListener('resize', measure, { passive: true });
+
+  const animate = now => {
+    if (!lastTime) lastTime = now;
+    const elapsed = Math.min((now - lastTime) / 1000, 0.05);
+    lastTime = now;
+    x += vx * elapsed;
+    y += vy * elapsed;
+
+    const distance = Math.hypot(x, y);
+    if (distance >= bounds.travelRadius && distance > 0) {
+      const nx = x / distance;
+      const ny = y / distance;
+      x = nx * bounds.travelRadius;
+      y = ny * bounds.travelRadius;
+      const dot = vx * nx + vy * ny;
+      if (dot > 0) {
+        vx -= 2 * dot * nx;
+        vy -= 2 * dot * ny;
+        const jitter = (Math.random() - 0.5) * 0.42;
+        const cos = Math.cos(jitter);
+        const sin = Math.sin(jitter);
+        [vx, vy] = [vx * cos - vy * sin, vx * sin + vy * cos];
+      }
+    }
+
+    if (Math.random() < elapsed * 0.12) spinDirection *= -1;
+    rotation += spinDirection * elapsed * (12 + Math.random() * 5);
+    mark.style.transform = 'translate3d(' + x.toFixed(1) + 'px, ' + y.toFixed(1) + 'px, 0) rotate(' + rotation.toFixed(1) + 'deg)';
+    requestAnimationFrame(animate);
+  };
+
+  requestAnimationFrame(animate);
 })();
