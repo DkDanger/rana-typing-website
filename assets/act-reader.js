@@ -222,9 +222,15 @@
     const page = clamp(Number(pageNumber) || 1, 1, state.pageCount);
     const node = state.pageNodes[page - 1];
     if (!node) return;
-    const target = node.offsetTop + (node.offsetHeight * clamp(fraction, 0, 0.98)) - 4;
-    if (smooth) byId('actPdfViewport').scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
-    else byId('actPdfViewport').scrollTop = Math.max(0, target);
+    const viewport = byId('actPdfViewport');
+    const viewportRect = viewport.getBoundingClientRect();
+    const nodeRect = node.getBoundingClientRect();
+    // offsetTop is relative to the pages wrapper, not the scroll viewport.
+    // Convert the page's actual screen position into the viewport's scroll coordinate.
+    const target = viewport.scrollTop + (nodeRect.top - viewportRect.top) + (node.offsetHeight * clamp(fraction, 0, 0.98)) - 4;
+    const safeTarget = Math.max(0, target);
+    // Use instant navigation so scroll events cannot change the base page mid-jump.
+    viewport.scrollTo({ top: safeTarget, behavior: 'auto' });
     state.page = page;
     byId('actPageInput').value = String(page);
     renderPage(page, state.generation);
@@ -309,8 +315,8 @@
   }
 
   document.querySelectorAll('[data-act]').forEach(button => button.addEventListener('click', () => selectAct(button.dataset.act)));
-  byId('actPagePrevious').addEventListener('click', () => scrollToPage(Math.max(1, state.page - 10)));
-  byId('actPageNext').addEventListener('click', () => scrollToPage(Math.min(state.pageCount, state.page + 10)));
+  byId('actPagePrevious').addEventListener('click', () => scrollToPage(Math.max(1, Number(byId('actPageInput').value || state.page) - 10), 0, false));
+  byId('actPageNext').addEventListener('click', () => scrollToPage(Math.min(state.pageCount, Number(byId('actPageInput').value || state.page) + 10), 0, false));
   byId('actPageInput').addEventListener('change', event => scrollToPage(event.currentTarget.value));
   byId('actPageInput').addEventListener('keydown', event => {
     if (event.key === 'Enter') {
