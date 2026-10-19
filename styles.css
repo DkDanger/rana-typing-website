@@ -4012,3 +4012,25 @@ body:has(.secondary-page-back) h2 {
   line-height: 1.5;
 }
 .payment-status[hidden] { display: none; }
+
+
+/* Restore a full-width, one-column payment flow on narrow screens. */
+@media (max-width: 760px) {
+  .payment-panel {
+    grid-template-areas: "heading" "qr" "copy" !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 15px;
+  }
+  .payment-heading,
+  .payment-copy { width: 100%; min-width: 0; }
+  .payment-qr-card {
+    width: min(100%, 330px);
+    max-width: 330px;
+    margin-inline: auto;
+  }
+  .payment-qr {
+    width: auto;
+    max-width: 100%;
+    max-height: min(62vh, 420px);
+  }
+}
