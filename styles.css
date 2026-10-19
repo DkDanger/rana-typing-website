@@ -4174,3 +4174,12 @@ body:has(.secondary-page-back) h2 {
   .main-nav a,
   .dropdown-btn { font-size: 12px; }
 }
+
+
+/* Keep consecutive translated Hindi heading fragments visually separated. */
+:lang(hi) .services-section .center-heading h2 span,
+:lang(hi) .highlight-box h2 span,
+:lang(hi) .faq-layout .section-heading h2 span,
+:lang(hi) .legal-reference-library .center-heading h2 span {
+  margin-inline-start: .22em;
+}
