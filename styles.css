@@ -465,7 +465,7 @@ button {
     0 0 30px rgba(238, 185, 74, 0.62),
     0 0 58px rgba(255, 70, 79, 0.36);
   animation: heroOrbHeartbeat 1.45s ease-in-out infinite;
-  transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: none;
   pointer-events: none;
   user-select: none;
 }
