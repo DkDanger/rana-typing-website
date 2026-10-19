@@ -3798,3 +3798,7 @@ body:has(.secondary-page-back) h2 {
 }
 @media (max-width: 420px) { .act-loading-card { align-items: flex-start; } .act-loading-hourglass { width: 58px; } }
 @media (prefers-reduced-motion: reduce) { .act-loading-hourglass svg { animation: none; } .official-link-card, .official-arrow { transition: none; } }
+
+.holiday-live-preview { display: block; background: #eef2f7; }
+.holiday-live-preview img { display: block; width: 100%; height: auto; object-fit: contain; }
+.holiday-live-preview:focus-visible { outline: 3px solid #2876c8; outline-offset: -3px; }
