@@ -529,7 +529,7 @@
   "Read Act below ↓": "नीचे अधिनियम पढ़ें ↓",
   "Explore the key Indian legal codes. Open the library to read the available Hindi or English Act PDFs.": "प्रमुख भारतीय अधिनियम और कानूनी धाराएँ यहाँ पढ़ें। सूची से अधिनियम चुनकर नीचे PDF खोलें।",
   "Legal Sections.": "कानूनी धाराएँ।",
-  "Indian Acts & ": "भारतीय अधिनियम और ",
+  "Indian Acts &": "भारतीय अधिनियम और",
     "Bharatiya Nyaya Sanhita, 2023": "भारतीय न्याय संहिता, 2023",
     "Review key provisions of India's new criminal code.": "भारत की नई आपराधिक संहिता के प्रमुख प्रावधान देखें।",
     "Bharatiya Nagarik Suraksha Sanhita, 2023": "भारतीय नागरिक सुरक्षा संहिता, 2023",
