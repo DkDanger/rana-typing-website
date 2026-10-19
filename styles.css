@@ -3988,3 +3988,13 @@ body:has(.secondary-page-back) h2 {
 @media (max-width: 760px) {
   .payment-qr { max-height: min(62vh, 420px); }
 }
+
+
+/* Align the payment QR box with the desk heading on desktop. */
+@media (min-width: 761px) {
+  .payment-panel {
+    grid-template-areas: "heading qr" "copy qr";
+    align-items: start;
+  }
+  .payment-qr-card { align-self: start; margin-top: 0; }
+}
