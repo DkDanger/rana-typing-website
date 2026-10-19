@@ -1161,3 +1161,18 @@ if (dropdownBtn && dropdownMenu) {
 })();
 
 /* Indian Acts cards remain fixed in place; no carousel animation. */
+
+
+/* Let the glowing hero R drift to gentle, randomly chosen angles. */
+(() => {
+  const mark = document.querySelector('.hero-orb-mark');
+  if (!mark || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const drift = () => {
+    const angle = Math.random() * 50 - 25;
+    const duration = 1500 + Math.random() * 1300;
+    mark.style.transitionDuration = duration + 'ms';
+    mark.style.transform = 'rotate(' + angle.toFixed(1) + 'deg)';
+    window.setTimeout(drift, duration + 500 + Math.random() * 1300);
+  };
+  window.setTimeout(drift, 800);
+})();
