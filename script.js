@@ -951,63 +951,103 @@ if (dropdownBtn && dropdownMenu) {
 })();
 
 
-/* Official portal rows move only when the current viewport clips cards. */
+/* Official portal rows use a seamless smooth marquee, alternating direction by category. */
 (() => {
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll('.official-carousel-row').forEach((row, index) => {
     const viewport = row.querySelector('.official-links-viewport');
     const track = row.querySelector('.official-links-track');
     if (!viewport || !track) return;
-    const direction = index % 2 === 0 ? 1 : -1;
-    let paused = false, resumeTimer, wasOverflowing = false;
-    const updateOverflow = () => {
-      const overflow = track.scrollWidth > viewport.clientWidth + 1;
+
+    const originalCards = [...track.children].filter(card => card.matches('.official-link-card'));
+    if (!originalCards.length) return;
+    const direction = index % 2 === 0 ? 'left' : 'right';
+    const group = document.createElement('div');
+    group.className = 'official-links-group';
+    group.append(...originalCards);
+    track.replaceChildren(group);
+    let duplicate = null;
+    let paused = false;
+    let resumeTimer;
+
+    const update = () => {
+      const overflow = group.scrollWidth > viewport.clientWidth + 1;
       row.classList.toggle('is-overflowing', overflow);
-      if (overflow && !wasOverflowing && direction < 0) viewport.scrollLeft = Math.max(0, track.scrollWidth - viewport.clientWidth);
-      wasOverflowing = overflow;
-      return overflow;
+      if (overflow && !reducedMotion) {
+        if (!duplicate) {
+          duplicate = group.cloneNode(true);
+          duplicate.setAttribute('aria-hidden', 'true');
+          duplicate.querySelectorAll('a,button,input,select,textarea').forEach(el => el.setAttribute('tabindex', '-1'));
+          duplicate.querySelectorAll('img').forEach(img => { img.alt = ''; });
+          track.appendChild(duplicate);
+        }
+        const duration = Math.max(22, group.scrollWidth / 65);
+        track.style.setProperty('--official-marquee-duration', duration + 's');
+        track.style.animation = 'officialCardsMove var(--official-marquee-duration) linear infinite';
+        track.style.animationDirection = direction === 'right' ? 'reverse' : 'normal';
+        viewport.style.overflowX = 'hidden';
+      } else {
+        duplicate?.remove();
+        duplicate = null;
+        track.style.animation = 'none';
+        track.style.animationDirection = '';
+        viewport.style.overflowX = overflow ? 'auto' : 'hidden';
+      }
     };
-    const pause = () => { paused = true; };
+
+    const pause = () => {
+      paused = true;
+      track.style.animationPlayState = 'paused';
+    };
     const resumeSoon = () => {
       clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(() => { paused = false; }, 1400);
+      resumeTimer = setTimeout(() => {
+        paused = false;
+        track.style.animationPlayState = '';
+      }, 1200);
     };
     row.addEventListener('pointerenter', pause);
-    row.addEventListener('pointerleave', () => { if (!row.contains(document.activeElement)) paused = false; });
+    row.addEventListener('pointerleave', () => {
+      if (!row.contains(document.activeElement)) {
+        paused = false;
+        track.style.animationPlayState = '';
+      }
+    });
     row.addEventListener('focusin', pause);
     row.addEventListener('focusout', resumeSoon);
+
     row.querySelectorAll('[data-official-scroll]').forEach(button => {
       button.addEventListener('click', () => {
-        if (!updateOverflow()) return;
-        const dir = Number(button.dataset.officialScroll) < 0 ? -1 : 1;
-        const card = track.querySelector('.official-link-card');
-        const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+        if (!update()) return;
+        const card = group.querySelector('.official-link-card');
+        const gap = parseFloat(getComputedStyle(group).columnGap || getComputedStyle(group).gap) || 0;
         const step = (card?.getBoundingClientRect().width || viewport.clientWidth * .8) + gap;
-        const max = Math.max(0, track.scrollWidth - viewport.clientWidth);
-        let target = viewport.scrollLeft + dir * step;
-        if (target > max - 4 && dir > 0) target = 0;
-        if (target < 4 && dir < 0) target = max;
-        viewport.scrollTo({ left: target, behavior: 'smooth' });
-        paused = true;
-        clearTimeout(resumeTimer);
-        resumeTimer = setTimeout(() => { paused = false; }, 2500);
+        const animation = track.getAnimations().find(item => item.playState !== 'idle');
+        if (!animation) {
+          const dir = Number(button.dataset.officialScroll) < 0 ? -1 : 1;
+          viewport.scrollBy({ left: dir * step, behavior: 'smooth' });
+          return;
+        }
+        const duration = typeof animation.effect?.getTiming().duration === 'number'
+          ? animation.effect.getTiming().duration : 40000;
+        const visualDirection = getComputedStyle(track).animationDirection === 'reverse' ? 1 : -1;
+        const wantedDirection = Number(button.dataset.officialScroll) < 0 ? -1 : 1;
+        const delta = duration * step / group.getBoundingClientRect().width * wantedDirection / visualDirection;
+        const keepPaused = paused || animation.playState === 'paused';
+        animation.pause();
+        animation.currentTime = ((Number(animation.currentTime || 0) + delta) % duration + duration) % duration;
+        if (!keepPaused) animation.play();
       });
     });
+
     if ('ResizeObserver' in window) {
-      const observer = new ResizeObserver(updateOverflow);
+      const observer = new ResizeObserver(update);
       observer.observe(viewport);
-      observer.observe(track);
-    } else window.addEventListener('resize', updateOverflow, { passive: true });
-    updateOverflow();
-    const glide = () => {
-      if (updateOverflow() && !reducedMotion && !paused && document.visibilityState === 'visible') {
-        const max = Math.max(0, track.scrollWidth - viewport.clientWidth);
-        if (direction > 0) viewport.scrollLeft = viewport.scrollLeft >= max - 1 ? 0 : Math.min(max, viewport.scrollLeft + .28);
-        else viewport.scrollLeft = viewport.scrollLeft <= 1 ? max : Math.max(0, viewport.scrollLeft - .28);
-      }
-      requestAnimationFrame(glide);
-    };
-    requestAnimationFrame(glide);
+      observer.observe(group);
+    } else {
+      window.addEventListener('resize', update, { passive: true });
+    }
+    update();
   });
 })();
 /* Service arrows move by exactly one card while the row keeps gliding. */
