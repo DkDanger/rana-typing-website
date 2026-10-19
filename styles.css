@@ -3523,10 +3523,10 @@ body:has(.secondary-page-back) h2 {
 .payment-panel {
   display: grid;
   grid-template-areas: "heading heading" "copy qr";
-  grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, .85fr);
   align-items: center;
-  gap: 16px clamp(28px, 5vw, 62px);
-  padding: clamp(24px, 4vw, 44px);
+  gap: 16px clamp(20px, 3vw, 40px);
+  padding: clamp(22px, 3vw, 36px);
   overflow: hidden;
   border-radius: var(--radius-lg);
   background: var(--primary);
@@ -3541,7 +3541,7 @@ body:has(.secondary-page-back) h2 {
   font-size: clamp(1.9rem, 3.5vw, 2.65rem);
   line-height: 1.12;
 }
-.payment-copy { grid-area: copy; }
+.payment-copy { grid-area: copy; min-width: 0; }
 .payment-upi {
   display: flex;
   flex-wrap: wrap;
@@ -3622,30 +3622,24 @@ body:has(.secondary-page-back) h2 {
 .payment-qr-card {
   grid-area: qr;
   width: 100%;
-  padding: 15px 18px 14px;
+  min-width: 0;
+  padding: 0;
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
   text-align: center;
   box-shadow: 0 12px 30px rgba(0,0,0,.16);
 }
-.payment-brand {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--primary);
-  font-family: "Manrope", sans-serif;
-  font-size: .78rem;
-  font-weight: 800;
-  letter-spacing: .16em;
-}
 .payment-qr {
-  width: min(100%, 235px);
-  aspect-ratio: 1;
-  margin: 0 auto 8px;
+  width: auto;
+  max-width: 100%;
+  height: min(340px, 38vw);
+  min-height: 260px;
+  margin: 0 auto;
   object-fit: contain;
-  image-rendering: pixelated;
+  border-radius: 12px;
 }
-.payment-qr-card p { color: var(--text-soft); font-size: .84rem; }
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -3667,7 +3661,7 @@ body:has(.secondary-page-back) h2 {
     border-radius: var(--radius);
   }
   .payment-heading h2 { font-size: 2rem; }
-  .payment-qr-card { max-width: 330px; margin-inline: auto; padding: 12px 14px; }
-  .payment-qr { width: min(100%, 215px); }
+  .payment-qr-card { max-width: 330px; margin-inline: auto; }
+  .payment-qr { height: 340px; min-height: 0; max-height: 55vh; }
   .payment-note { font-size: .76rem; }
 }
