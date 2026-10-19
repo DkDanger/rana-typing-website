@@ -895,3 +895,53 @@ if (dropdownBtn && dropdownMenu) {
     }, { once: true });
   }
 })();
+
+
+/* Official portal rows: gentle auto-glide plus accessible manual arrows. */
+(() => {
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.official-carousel-row').forEach(row => {
+    const viewport = row.querySelector('.official-links-viewport');
+    if (!viewport) return;
+    let paused = false;
+    let resumeTimer;
+    const pause = () => { paused = true; };
+    const resumeSoon = () => {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => { paused = false; }, 1400);
+    };
+    row.addEventListener('pointerenter', pause);
+    row.addEventListener('pointerleave', () => { if (!row.contains(document.activeElement)) paused = false; });
+    row.addEventListener('focusin', pause);
+    row.addEventListener('focusout', resumeSoon);
+
+    row.querySelectorAll('[data-official-scroll]').forEach(button => {
+      button.addEventListener('click', () => {
+        const direction = Number(button.dataset.officialScroll) < 0 ? -1 : 1;
+        const step = Math.max(250, Math.round(viewport.clientWidth * 0.72));
+        const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+        if (direction > 0 && viewport.scrollLeft >= maxScroll - 8) {
+          viewport.scrollTo({ left: 0, behavior: 'smooth' });
+        } else if (direction < 0 && viewport.scrollLeft <= 8) {
+          viewport.scrollTo({ left: maxScroll, behavior: 'smooth' });
+        } else {
+          viewport.scrollBy({ left: direction * step, behavior: 'smooth' });
+        }
+        paused = true;
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(() => { paused = false; }, 4200);
+      });
+    });
+
+    const glide = () => {
+      if (!reducedMotion && !paused && document.visibilityState === 'visible' &&
+          viewport.scrollWidth > viewport.clientWidth + 8) {
+        const maxScroll = viewport.scrollWidth - viewport.clientWidth;
+        if (viewport.scrollLeft >= maxScroll - 1) viewport.scrollLeft = 0;
+        else viewport.scrollLeft = Math.min(maxScroll, viewport.scrollLeft + 0.28);
+      }
+      window.requestAnimationFrame(glide);
+    };
+    window.requestAnimationFrame(glide);
+  });
+})();
