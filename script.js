@@ -840,4 +840,20 @@ if (dropdownBtn && dropdownMenu) {
   dialog.addEventListener('click', event => {
     if (event.target === dialog) dialog.close();
   });
+
+  const upiPaymentForm = document.getElementById('upiPaymentForm');
+  upiPaymentForm?.addEventListener('submit', event => {
+    event.preventDefault();
+    const amountField = document.getElementById('paymentAmount');
+    if (!amountField?.reportValidity()) return;
+    const amount = Number(amountField.value);
+    if (!Number.isFinite(amount) || amount < 1) return;
+    const params = new URLSearchParams({
+      pa: '7209366125@ptsbi',
+      pn: 'Rana Typing',
+      cu: 'INR',
+      am: amount.toFixed(2)
+    });
+    window.location.href = 'upi://pay?' + params.toString();
+  });
 })();
