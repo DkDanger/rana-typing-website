@@ -539,18 +539,26 @@ const dropdownMenu =
 if (dropdownBtn && dropdownMenu) {
 
   dropdownBtn.addEventListener("click", () => {
-    dropdownMenu.classList.toggle("show");
+    const isOpen = dropdownMenu.classList.toggle("show");
+    dropdownBtn.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  const closeDropdown = () => {
+    dropdownMenu.classList.remove("show");
+    dropdownBtn.setAttribute("aria-expanded", "false");
+  };
+
+  dropdownMenu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", closeDropdown);
   });
 
   document.addEventListener("click", (event) => {
-
     if (
       !dropdownBtn.contains(event.target) &&
       !dropdownMenu.contains(event.target)
     ) {
-      dropdownMenu.classList.remove("show");
+      closeDropdown();
     }
-
   });
 
 }
