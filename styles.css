@@ -3938,3 +3938,32 @@ body:has(.secondary-page-back) h2 {
   visibility: hidden;
   pointer-events: none;
 }
+
+
+/* Keep the four Indian Acts reference cards fixed in a responsive grid. */
+.legal-reference-controls { display: none !important; }
+.legal-reference-marquee {
+  overflow: visible !important;
+  padding: 6px 0 22px;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+.legal-reference-track {
+  display: block;
+  width: 100%;
+  animation: none !important;
+  transform: none !important;
+}
+.legal-reference-grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+.legal-reference-card { min-width: 0; width: auto; }
+@media (max-width: 1050px) {
+  .legal-reference-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .legal-reference-grid { grid-template-columns: 1fr; gap: 16px; }
+}
