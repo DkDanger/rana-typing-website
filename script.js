@@ -994,6 +994,7 @@ if (dropdownBtn && dropdownMenu) {
         track.style.animationDirection = '';
         viewport.style.overflowX = overflow ? 'auto' : 'hidden';
       }
+      return overflow;
     };
 
     const pause = () => {
@@ -1067,29 +1068,54 @@ if (dropdownBtn && dropdownMenu) {
     update();
   });
 })();
-/* Service arrows move by exactly one card while the row keeps gliding. */
+/* Service and CSC arrows glide smoothly by exactly one card. */
 (() => {
   document.querySelectorAll('.service-category').forEach(category => {
     const marquee = category.querySelector('.service-marquee');
     const track = marquee?.querySelector('.service-marquee-track');
     const group = track?.querySelector('.service-marquee-group');
     if (!marquee || !track || !group) return;
+    let arrowFrame = null;
     category.querySelectorAll('[data-service-scroll]').forEach(button => {
       button.addEventListener('click', () => {
         const animation = track.getAnimations().find(item => item.playState !== 'idle');
-        if (!animation) return;
         const card = group.querySelector('.service-card');
         const gap = parseFloat(getComputedStyle(group).columnGap || getComputedStyle(group).gap) || 0;
         const cardStep = (card?.getBoundingClientRect().width || 270) + gap;
+        if (!animation) {
+          marquee.scrollBy({
+            left: (Number(button.dataset.serviceScroll) < 0 ? -1 : 1) * cardStep,
+            behavior: 'smooth'
+          });
+          return;
+        }
         const groupWidth = group.getBoundingClientRect().width;
         const timing = animation.effect?.getTiming();
         const duration = typeof timing?.duration === 'number' ? timing.duration : 43000;
+        if (!groupWidth || !duration) return;
         const visualDirection = getComputedStyle(track).animationDirection === 'reverse' ? 1 : -1;
         const wantedDirection = Number(button.dataset.serviceScroll) < 0 ? -1 : 1;
         const delta = duration * cardStep / groupWidth * wantedDirection / visualDirection;
+        if (arrowFrame !== null) cancelAnimationFrame(arrowFrame);
+        const from = Number(animation.currentTime || 0);
+        const startTime = performance.now();
+        const slideDuration = 480;
         animation.pause();
-        animation.currentTime = ((Number(animation.currentTime || 0) + delta) % duration + duration) % duration;
-        animation.play();
+        const glideArrow = now => {
+          const progress = Math.min(1, (now - startTime) / slideDuration);
+          const eased = progress < .5
+            ? 2 * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+          const currentTime = from + delta * eased;
+          animation.currentTime = ((currentTime % duration) + duration) % duration;
+          if (progress < 1) {
+            arrowFrame = requestAnimationFrame(glideArrow);
+          } else {
+            arrowFrame = null;
+            animation.play();
+          }
+        };
+        arrowFrame = requestAnimationFrame(glideArrow);
       });
     });
   });
