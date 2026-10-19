@@ -3930,3 +3930,11 @@ body:has(.secondary-page-back) h2 {
   .legal-reference-card { flex-basis: min(78vw, 292px); }
 }
 @media(prefers-reduced-motion:reduce) { .legal-reference-track { animation: none !important; } }
+
+/* Hide row controls whenever every card fits in the current viewport. */
+.service-category:not(.has-overflow) .service-carousel-controls,
+.official-carousel-row:not(.is-overflowing) .official-carousel-controls,
+.legal-reference-carousel:not(.is-overflowing) .legal-reference-controls {
+  visibility: hidden;
+  pointer-events: none;
+}

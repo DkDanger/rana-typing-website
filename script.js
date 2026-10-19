@@ -641,38 +641,48 @@ if (dropdownBtn && dropdownMenu) {
 })();
 
 
-/* Slow, seamless horizontal service card movement. Duplicate groups are decorative
-   for the loop; links in the original cards remain keyboard-accessible. */
+/* Responsive service card rows move only while cards overflow the visible width. */
 (() => {
-  const prefersReducedMotion = window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll('.service-marquee').forEach((marquee, index) => {
     const track = marquee.querySelector('.service-marquee-track');
-    if (!track) return;
-    const originalGroup = track.querySelector('.service-marquee-group');
-    if (!originalGroup) return;
-    const count = originalGroup.children.length;
-    if (!count) return;
-
-    if (prefersReducedMotion) {
-      marquee.style.overflowX = 'auto';
-      track.style.animation = 'none';
-      return;
-    }
-
-    const duplicate = originalGroup.cloneNode(true);
-    duplicate.setAttribute('aria-hidden', 'true');
-    duplicate.querySelectorAll('a, button, input, select, textarea').forEach(el => {
-      el.setAttribute('tabindex', '-1');
-    });
-    duplicate.querySelectorAll('img').forEach(img => { img.setAttribute('alt', ''); });
-    track.appendChild(duplicate);
-
-    /* Longer durations make the cards glide slowly rather than jump between slides. */
+    const category = marquee.closest('.service-category');
+    const group = track?.querySelector('.service-marquee-group');
+    if (!track || !group || !group.children.length) return;
+    let duplicate = null;
     const durations = [43, 48, 40];
-    track.style.setProperty('--service-marquee-duration', (durations[index] || 44) + 's');
     const direction = marquee.dataset.direction || (index === 1 ? 'right' : 'left');
-    track.style.animationDirection = direction === 'right' ? 'reverse' : 'normal';
+    track.style.setProperty('--service-marquee-duration', (durations[index] || 44) + 's');
+    const update = () => {
+      const overflow = group.scrollWidth > marquee.clientWidth + 1;
+      category?.classList.toggle('has-overflow', overflow);
+      if (overflow && !reducedMotion) {
+        if (!duplicate) {
+          duplicate = group.cloneNode(true);
+          duplicate.setAttribute('aria-hidden', 'true');
+          duplicate.querySelectorAll('a,button,input,select,textarea').forEach(el => el.setAttribute('tabindex', '-1'));
+          duplicate.querySelectorAll('img').forEach(img => { img.alt = ''; });
+          track.appendChild(duplicate);
+        }
+        track.style.animation = 'serviceMarqueeMove var(--service-marquee-duration) linear infinite';
+        track.style.animationDirection = direction === 'right' ? 'reverse' : 'normal';
+        marquee.style.overflowX = 'hidden';
+      } else {
+        duplicate?.remove();
+        duplicate = null;
+        track.style.animation = 'none';
+        track.style.animationDirection = '';
+        marquee.style.overflowX = reducedMotion && overflow ? 'auto' : 'hidden';
+      }
+    };
+    if ('ResizeObserver' in window) {
+      const observer = new ResizeObserver(update);
+      observer.observe(marquee);
+      observer.observe(group);
+    } else {
+      window.addEventListener('resize', update, { passive: true });
+    }
+    requestAnimationFrame(update);
   });
 })();
 
@@ -897,7 +907,7 @@ if (dropdownBtn && dropdownMenu) {
 })();
 
 
-/* Official portal rows: alternating glide; arrows nudge exactly one card. */
+/* Official portal rows move only when the current viewport clips cards. */
 (() => {
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll('.official-carousel-row').forEach((row, index) => {
@@ -905,8 +915,14 @@ if (dropdownBtn && dropdownMenu) {
     const track = row.querySelector('.official-links-track');
     if (!viewport || !track) return;
     const direction = index % 2 === 0 ? 1 : -1;
-    let paused = false;
-    let resumeTimer;
+    let paused = false, resumeTimer, wasOverflowing = false;
+    const updateOverflow = () => {
+      const overflow = track.scrollWidth > viewport.clientWidth + 1;
+      row.classList.toggle('is-overflowing', overflow);
+      if (overflow && !wasOverflowing && direction < 0) viewport.scrollLeft = Math.max(0, track.scrollWidth - viewport.clientWidth);
+      wasOverflowing = overflow;
+      return overflow;
+    };
     const pause = () => { paused = true; };
     const resumeSoon = () => {
       clearTimeout(resumeTimer);
@@ -918,11 +934,12 @@ if (dropdownBtn && dropdownMenu) {
     row.addEventListener('focusout', resumeSoon);
     row.querySelectorAll('[data-official-scroll]').forEach(button => {
       button.addEventListener('click', () => {
+        if (!updateOverflow()) return;
         const dir = Number(button.dataset.officialScroll) < 0 ? -1 : 1;
         const card = track.querySelector('.official-link-card');
         const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
         const step = (card?.getBoundingClientRect().width || viewport.clientWidth * .8) + gap;
-        const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+        const max = Math.max(0, track.scrollWidth - viewport.clientWidth);
         let target = viewport.scrollLeft + dir * step;
         if (target > max - 4 && dir > 0) target = 0;
         if (target < 4 && dir < 0) target = max;
@@ -932,13 +949,15 @@ if (dropdownBtn && dropdownMenu) {
         resumeTimer = setTimeout(() => { paused = false; }, 2500);
       });
     });
-    requestAnimationFrame(() => {
-      if (direction < 0 && viewport.scrollWidth > viewport.clientWidth + 8 && viewport.scrollLeft < 2)
-        viewport.scrollLeft = viewport.scrollWidth - viewport.clientWidth;
-    });
+    if ('ResizeObserver' in window) {
+      const observer = new ResizeObserver(updateOverflow);
+      observer.observe(viewport);
+      observer.observe(track);
+    } else window.addEventListener('resize', updateOverflow, { passive: true });
+    updateOverflow();
     const glide = () => {
-      if (!reducedMotion && !paused && document.visibilityState === 'visible' && viewport.scrollWidth > viewport.clientWidth + 8) {
-        const max = viewport.scrollWidth - viewport.clientWidth;
+      if (updateOverflow() && !reducedMotion && !paused && document.visibilityState === 'visible') {
+        const max = Math.max(0, track.scrollWidth - viewport.clientWidth);
         if (direction > 0) viewport.scrollLeft = viewport.scrollLeft >= max - 1 ? 0 : Math.min(max, viewport.scrollLeft + .28);
         else viewport.scrollLeft = viewport.scrollLeft <= 1 ? max : Math.max(0, viewport.scrollLeft - .28);
       }
@@ -1014,7 +1033,7 @@ if (dropdownBtn && dropdownMenu) {
   render();
 })();
 
-/* Legal Act cards join the opposite-direction auto-moving card rows. */
+/* Responsive Act-card row; animate only when at least one card is clipped. */
 (() => {
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll('[data-legal-carousel]').forEach(carousel => {
@@ -1023,22 +1042,41 @@ if (dropdownBtn && dropdownMenu) {
     if (!viewport || !group) return;
     const originals = [...group.querySelectorAll(':scope > .legal-reference-card')];
     if (!originals.length) return;
-    const duplicate = group.cloneNode(true);
-    duplicate.setAttribute('aria-hidden', 'true');
-    duplicate.querySelectorAll('a,button,input,select,textarea').forEach(el => el.setAttribute('tabindex', '-1'));
-    duplicate.querySelectorAll('img').forEach(img => { img.alt = ''; });
     const movingTrack = document.createElement('div');
     movingTrack.className = 'legal-reference-track';
     viewport.replaceChildren(movingTrack);
-    movingTrack.append(group, duplicate);
+    movingTrack.appendChild(group);
     const direction = viewport.dataset.legalDirection === 'left' ? -1 : 1;
-    if (!reducedMotion) {
-      movingTrack.style.setProperty('--legal-row-duration', '54s');
-      movingTrack.style.animation = 'legalReferenceMove var(--legal-row-duration) linear infinite';
-      if (direction < 0) movingTrack.style.animationDirection = 'reverse';
-    } else {
-      viewport.style.overflowX = 'auto';
-    }
+    let duplicate = null;
+    const update = () => {
+      const overflow = group.scrollWidth > viewport.clientWidth + 1;
+      carousel.classList.toggle('is-overflowing', overflow);
+      if (overflow && !reducedMotion) {
+        if (!duplicate) {
+          duplicate = group.cloneNode(true);
+          duplicate.setAttribute('aria-hidden', 'true');
+          duplicate.querySelectorAll('a,button,input,select,textarea').forEach(el => el.setAttribute('tabindex', '-1'));
+          duplicate.querySelectorAll('img').forEach(img => { img.alt = ''; });
+          movingTrack.appendChild(duplicate);
+        }
+        viewport.style.overflowX = 'hidden';
+        movingTrack.style.setProperty('--legal-row-duration', '54s');
+        movingTrack.style.animation = 'legalReferenceMove var(--legal-row-duration) linear infinite';
+        movingTrack.style.animationDirection = direction < 0 ? 'reverse' : 'normal';
+      } else {
+        duplicate?.remove();
+        duplicate = null;
+        movingTrack.style.animation = 'none';
+        movingTrack.style.animationDirection = '';
+        viewport.style.overflowX = overflow ? 'auto' : 'hidden';
+      }
+    };
+    if ('ResizeObserver' in window) {
+      const observer = new ResizeObserver(update);
+      observer.observe(viewport);
+      observer.observe(group);
+    } else window.addEventListener('resize', update, { passive: true });
+    requestAnimationFrame(update);
     const pause = () => { movingTrack.style.animationPlayState = 'paused'; };
     const resume = () => { movingTrack.style.animationPlayState = ''; };
     carousel.addEventListener('pointerenter', pause);
@@ -1049,9 +1087,10 @@ if (dropdownBtn && dropdownMenu) {
     }, 1000));
     carousel.querySelectorAll('[data-legal-scroll]').forEach(button => {
       button.addEventListener('click', () => {
-        const animation = movingTrack.getAnimations().find(item => item.playState !== 'idle');
+        if (!carousel.classList.contains('is-overflowing')) return;
         const gap = parseFloat(getComputedStyle(group).columnGap || getComputedStyle(group).gap) || 0;
         const step = (originals[0].getBoundingClientRect().width || 280) + gap;
+        const animation = movingTrack.getAnimations().find(item => item.playState !== 'idle');
         if (!animation) {
           viewport.scrollBy({ left: step * (Number(button.dataset.legalScroll) || 1), behavior: 'smooth' });
           return;
