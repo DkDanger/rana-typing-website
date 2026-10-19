@@ -32,7 +32,7 @@
     rel="stylesheet"
   >
 
- <link rel="stylesheet" href="styles.css?v=20261019i">
+ <link rel="stylesheet" href="styles.css?v=20261019k">
 
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -389,7 +389,12 @@
           <h2>Indian Acts &amp; <span>Legal Sections.</span></h2>
           <p>Explore the key Indian legal codes. Open the library to read the available Hindi or English Act PDFs.</p>
         </div>
-        <div class="legal-reference-grid">
+        <div class="legal-reference-carousel" data-legal-carousel>
+          <div class="legal-reference-controls official-carousel-controls">
+            <button type="button" class="official-arrow" data-legal-scroll="-1" aria-label="Move Acts cards left" title="Move cards left">‹</button>
+            <button type="button" class="official-arrow" data-legal-scroll="1" aria-label="Move Acts cards right" title="Move cards right">›</button>
+          </div>
+          <div class="legal-reference-marquee" data-legal-direction="right"><div class="legal-reference-grid">
           <a class="legal-reference-card reveal" href="#acts" data-act="bns">
             <div class="legal-reference-photo"><img src="https://dkdanger.github.io/rana-typing-website2/assets/legal-drafting.png" alt="Legal document drafting and reference materials" loading="lazy"><span>BNS</span></div>
             <div class="legal-reference-copy act-copy"><h3><strong data-en="Bharatiya Nyaya Sanhita, 2023" data-hi="भारतीय न्याय संहिता, 2023">Bharatiya Nyaya Sanhita, 2023</strong></h3><p data-en="Explore provisions of the new Indian criminal law." data-hi="नई भारतीय आपराधिक संहिता के प्रावधानों को पढ़ें।">Explore provisions of the new Indian criminal law.</p><small class="act-card-meta">BNS · Hindi 145 pages · English 112 pages</small><span class="legal-reference-link">Read Act below ↓</span></div>
@@ -406,7 +411,7 @@
             <div class="legal-reference-photo"><img src="https://dkdanger.github.io/rana-typing-website2/assets/identity-cards.png" alt="Government identity and legal documentation" loading="lazy"><span>IPC</span></div>
             <div class="legal-reference-copy act-copy"><h3><strong>Indian Penal Code, 1860</strong></h3><p>Access the reference listing for the earlier penal code.</p><small class="act-card-meta">IPC · Hindi 100 pages · English 268 pages</small><span class="legal-reference-link">Read Act below ↓</span></div>
           </a>
-        </div>
+        </div></div></div>
         <div class="act-reader-card" id="acts" aria-label="Act PDF reader">
           <div id="actReaderEmpty" class="act-reader-empty">
             <span class="material" aria-hidden="true">menu_book</span>
@@ -1134,7 +1139,7 @@
       <p id="photoViewerCaption" class="photo-viewer-caption"></p>
     </dialog>
 
-<script src="script.js?v=20261019e"></script>
+<script src="script.js?v=20261019f"></script>
 <script src="assets/act-reader.js?v=20261019c"></script>
 <script src="translations.js?v=20261019e"></script>
 </body>

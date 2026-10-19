@@ -897,12 +897,13 @@ if (dropdownBtn && dropdownMenu) {
 })();
 
 
-/* Official portal rows: alternating auto-glide and accessible manual arrows. */
+/* Official portal rows: alternating glide; arrows nudge exactly one card. */
 (() => {
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll('.official-carousel-row').forEach((row, index) => {
     const viewport = row.querySelector('.official-links-viewport');
-    if (!viewport) return;
+    const track = row.querySelector('.official-links-track');
+    if (!viewport || !track) return;
     const direction = index % 2 === 0 ? 1 : -1;
     let paused = false;
     let resumeTimer;
@@ -917,55 +918,62 @@ if (dropdownBtn && dropdownMenu) {
     row.addEventListener('focusout', resumeSoon);
     row.querySelectorAll('[data-official-scroll]').forEach(button => {
       button.addEventListener('click', () => {
-        const stepDirection = Number(button.dataset.officialScroll) < 0 ? -1 : 1;
-        const step = Math.max(250, Math.round(viewport.clientWidth * 0.72));
-        const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-        const target = viewport.scrollLeft + stepDirection * step;
-        viewport.scrollTo({ left: target > maxScroll - 8 && stepDirection > 0 ? 0 : target < 8 && stepDirection < 0 ? maxScroll : target, behavior: 'smooth' });
+        const dir = Number(button.dataset.officialScroll) < 0 ? -1 : 1;
+        const card = track.querySelector('.official-link-card');
+        const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+        const step = (card?.getBoundingClientRect().width || viewport.clientWidth * .8) + gap;
+        const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+        let target = viewport.scrollLeft + dir * step;
+        if (target > max - 4 && dir > 0) target = 0;
+        if (target < 4 && dir < 0) target = max;
+        viewport.scrollTo({ left: target, behavior: 'smooth' });
         paused = true;
         clearTimeout(resumeTimer);
-        resumeTimer = setTimeout(() => { paused = false; }, 4200);
+        resumeTimer = setTimeout(() => { paused = false; }, 2500);
       });
     });
-    const setInitialDirection = () => {
-      if (direction < 0 && viewport.scrollWidth > viewport.clientWidth + 8 && viewport.scrollLeft < 2) {
+    requestAnimationFrame(() => {
+      if (direction < 0 && viewport.scrollWidth > viewport.clientWidth + 8 && viewport.scrollLeft < 2)
         viewport.scrollLeft = viewport.scrollWidth - viewport.clientWidth;
-      }
-    };
-    requestAnimationFrame(setInitialDirection);
+    });
     const glide = () => {
       if (!reducedMotion && !paused && document.visibilityState === 'visible' && viewport.scrollWidth > viewport.clientWidth + 8) {
-        const maxScroll = viewport.scrollWidth - viewport.clientWidth;
-        if (direction > 0) viewport.scrollLeft = viewport.scrollLeft >= maxScroll - 1 ? 0 : Math.min(maxScroll, viewport.scrollLeft + 0.28);
-        else viewport.scrollLeft = viewport.scrollLeft <= 1 ? maxScroll : Math.max(0, viewport.scrollLeft - 0.28);
+        const max = viewport.scrollWidth - viewport.clientWidth;
+        if (direction > 0) viewport.scrollLeft = viewport.scrollLeft >= max - 1 ? 0 : Math.min(max, viewport.scrollLeft + .28);
+        else viewport.scrollLeft = viewport.scrollLeft <= 1 ? max : Math.max(0, viewport.scrollLeft - .28);
       }
       requestAnimationFrame(glide);
     };
     requestAnimationFrame(glide);
   });
 })();
-
-/* 3D controls let visitors nudge each continuously moving service row. */
+/* Service arrows move by exactly one card while the row keeps gliding. */
 (() => {
   document.querySelectorAll('.service-category').forEach(category => {
     const marquee = category.querySelector('.service-marquee');
-    const track = marquee && marquee.querySelector('.service-marquee-track');
-    if (!marquee || !track) return;
+    const track = marquee?.querySelector('.service-marquee-track');
+    const group = track?.querySelector('.service-marquee-group');
+    if (!marquee || !track || !group) return;
     category.querySelectorAll('[data-service-scroll]').forEach(button => {
       button.addEventListener('click', () => {
         const animation = track.getAnimations().find(item => item.playState !== 'idle');
         if (!animation) return;
-        const direction = Number(button.dataset.serviceScroll) || 1;
-        const visual = marquee.dataset.direction === 'right' ? -1 : 1;
+        const card = group.querySelector('.service-card');
+        const gap = parseFloat(getComputedStyle(group).columnGap || getComputedStyle(group).gap) || 0;
+        const cardStep = (card?.getBoundingClientRect().width || 270) + gap;
+        const groupWidth = group.getBoundingClientRect().width;
+        const timing = animation.effect?.getTiming();
+        const duration = typeof timing?.duration === 'number' ? timing.duration : 43000;
+        const visualDirection = getComputedStyle(track).animationDirection === 'reverse' ? 1 : -1;
+        const wantedDirection = Number(button.dataset.serviceScroll) < 0 ? -1 : 1;
+        const delta = duration * cardStep / groupWidth * wantedDirection / visualDirection;
         animation.pause();
-        animation.currentTime = Math.max(0, Number(animation.currentTime || 0) - direction * visual * 4800);
+        animation.currentTime = ((Number(animation.currentTime || 0) + delta) % duration + duration) % duration;
         animation.play();
-        track.style.animationPlayState = 'running';
       });
     });
   });
 })();
-
 /* Local Indian month calendar; the calendar grid itself opens the official court holiday list. */
 (() => {
   const monthNode = document.getElementById('indianCalendarMonth');
@@ -1004,4 +1012,58 @@ if (dropdownBtn && dropdownMenu) {
   }));
   window.setOfficialCalendarLanguage = render;
   render();
+})();
+
+/* Legal Act cards join the opposite-direction auto-moving card rows. */
+(() => {
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('[data-legal-carousel]').forEach(carousel => {
+    const viewport = carousel.querySelector('.legal-reference-marquee');
+    const group = viewport?.querySelector('.legal-reference-grid');
+    if (!viewport || !group) return;
+    const originals = [...group.querySelectorAll(':scope > .legal-reference-card')];
+    if (!originals.length) return;
+    const duplicate = group.cloneNode(true);
+    duplicate.setAttribute('aria-hidden', 'true');
+    duplicate.querySelectorAll('a,button,input,select,textarea').forEach(el => el.setAttribute('tabindex', '-1'));
+    duplicate.querySelectorAll('img').forEach(img => { img.alt = ''; });
+    const movingTrack = document.createElement('div');
+    movingTrack.className = 'legal-reference-track';
+    viewport.replaceChildren(movingTrack);
+    movingTrack.append(group, duplicate);
+    const direction = viewport.dataset.legalDirection === 'left' ? -1 : 1;
+    if (!reducedMotion) {
+      movingTrack.style.setProperty('--legal-row-duration', '54s');
+      movingTrack.style.animation = 'legalReferenceMove var(--legal-row-duration) linear infinite';
+      if (direction < 0) movingTrack.style.animationDirection = 'reverse';
+    } else {
+      viewport.style.overflowX = 'auto';
+    }
+    const pause = () => { movingTrack.style.animationPlayState = 'paused'; };
+    const resume = () => { movingTrack.style.animationPlayState = ''; };
+    carousel.addEventListener('pointerenter', pause);
+    carousel.addEventListener('pointerleave', () => { if (!carousel.contains(document.activeElement)) resume(); });
+    carousel.addEventListener('focusin', pause);
+    carousel.addEventListener('focusout', () => setTimeout(() => {
+      if (!carousel.matches(':hover') && !carousel.contains(document.activeElement)) resume();
+    }, 1000));
+    carousel.querySelectorAll('[data-legal-scroll]').forEach(button => {
+      button.addEventListener('click', () => {
+        const animation = movingTrack.getAnimations().find(item => item.playState !== 'idle');
+        const gap = parseFloat(getComputedStyle(group).columnGap || getComputedStyle(group).gap) || 0;
+        const step = (originals[0].getBoundingClientRect().width || 280) + gap;
+        if (!animation) {
+          viewport.scrollBy({ left: step * (Number(button.dataset.legalScroll) || 1), behavior: 'smooth' });
+          return;
+        }
+        const duration = 54000;
+        const visualDirection = getComputedStyle(movingTrack).animationDirection === 'reverse' ? 1 : -1;
+        const wanted = Number(button.dataset.legalScroll) < 0 ? -1 : 1;
+        const delta = duration * step / group.getBoundingClientRect().width * wanted / visualDirection;
+        animation.pause();
+        animation.currentTime = ((Number(animation.currentTime || 0) + delta) % duration + duration) % duration;
+        animation.play();
+      });
+    });
+  });
 })();
