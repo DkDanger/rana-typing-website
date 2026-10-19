@@ -851,23 +851,67 @@ if (dropdownBtn && dropdownMenu) {
     if (event.target === dialog) dialog.close();
   });
 
-  const upiPaymentForm = document.getElementById('upiPaymentForm');
-  upiPaymentForm?.addEventListener('submit', event => {
+
+})();
+
+/* Independent UPI payment form: open the installed UPI app with the entered amount. */
+(() => {
+  const form = document.getElementById('upiPaymentForm');
+  const amountField = document.getElementById('paymentAmount');
+  const status = document.getElementById('paymentStatus');
+  if (!form || !amountField) return;
+
+  let fallbackTimer;
+  form.addEventListener('submit', event => {
     event.preventDefault();
-    const amountField = document.getElementById('paymentAmount');
-    if (!amountField?.reportValidity()) return;
+    if (status) {
+      status.hidden = true;
+      status.textContent = '';
+    }
+    if (!form.reportValidity()) return;
+
     const amount = Number(amountField.value);
-    if (!Number.isFinite(amount) || amount < 1) return;
+    if (!Number.isFinite(amount) || amount < 1) {
+      amountField.setCustomValidity('Enter an amount of at least ₹1.');
+      amountField.reportValidity();
+      amountField.setCustomValidity('');
+      return;
+    }
+
+    const amountText = amount.toFixed(2);
     const params = new URLSearchParams({
       pa: '7209366125@ptsbi',
       pn: 'Rana Typing',
-      cu: 'INR',
-      am: amount.toFixed(2)
+      tr: 'RT' + Date.now().toString(36).toUpperCase(),
+      tn: 'Payment to Rana Typing',
+      am: amountText,
+      cu: 'INR'
     });
-    window.location.href = 'upi://pay?' + params.toString();
+    const upiUrl = 'upi://pay?' + params.toString();
+    const isHindi = document.documentElement.lang === 'hi';
+
+    if (status) {
+      status.hidden = false;
+      status.textContent = isHindi
+        ? '₹' + amountText + ' का भुगतान अनुरोध UPI ऐप में खोला जा रहा है…'
+        : 'Opening a UPI payment request for ₹' + amountText + '…';
+    }
+
+    clearTimeout(fallbackTimer);
+    const onAppSwitch = () => {
+      if (document.visibilityState === 'hidden') clearTimeout(fallbackTimer);
+    };
+    document.addEventListener('visibilitychange', onAppSwitch, { once: true });
+    fallbackTimer = window.setTimeout(() => {
+      if (!status || document.visibilityState !== 'visible') return;
+      status.textContent = isHindi
+        ? 'अगर UPI ऐप नहीं खुला, तो QR कोड स्कैन करें, ₹' + amountText + ' दर्ज करें, Rana Typing और UPI ID 7209366125@ptsbi की पुष्टि करके भुगतान पूरा करें।'
+        : 'If your UPI app did not open, scan the QR code, enter ₹' + amountText + ', verify Rana Typing and UPI ID 7209366125@ptsbi, then complete payment in your app.';
+    }, 1800);
+
+    window.location.href = upiUrl;
   });
 })();
-
 
 
 /* Warm the local Act PDFs after the page has fully loaded, without navigating away. */
