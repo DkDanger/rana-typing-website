@@ -4146,6 +4146,6 @@ body:has(.secondary-page-back) h2 {
   line-height: 1.65;
 }
 /* The gallery title continues directly into its highlighted span. */
-.premium-gallery .center-heading h2 span {
+.gallery-section .section-heading h2 span {
   margin-inline-start: .14em;
 }
