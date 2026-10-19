@@ -3802,3 +3802,42 @@ body:has(.secondary-page-back) h2 {
 .holiday-live-preview { display: block; background: #eef2f7; }
 .holiday-live-preview img { display: block; width: 100%; height: auto; object-fit: contain; }
 .holiday-live-preview:focus-visible { outline: 3px solid #2876c8; outline-offset: -3px; }
+
+/* Service row 3D manual controls */
+.service-category-heading { position: relative; padding-right: 104px; }
+.service-carousel-controls { display: flex; gap: 9px; position: absolute; right: 2px; top: 4px; z-index: 3; }
+.service-arrow-3d, .indian-calendar-nav {
+  display: grid; place-items: center; width: 40px; height: 38px; border: 1px solid rgba(255,255,255,.72);
+  border-radius: 12px; color: #fff; background: linear-gradient(145deg,#4389e8,#1753a6);
+  box-shadow: 0 5px 0 #103c7c, 0 9px 15px rgba(19,63,126,.22);
+  font: 800 25px/1 Inter, sans-serif; cursor: pointer; transform: perspective(260px) rotateY(-8deg);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.service-arrow-3d:hover, .indian-calendar-nav:hover { transform: perspective(260px) rotateY(0) translateY(-2px); box-shadow: 0 7px 0 #103c7c, 0 12px 18px rgba(19,63,126,.25); filter: brightness(1.08); }
+.service-arrow-3d:active, .indian-calendar-nav:active { transform: translateY(3px); box-shadow: 0 2px 0 #103c7c; }
+.service-arrow-3d:focus-visible, .indian-calendar-nav:focus-visible { outline: 3px solid #f3c74f; outline-offset: 3px; }
+.live-indian-calendar { min-width: 0; padding: clamp(16px,2.2vw,24px); border: 1px solid var(--border); border-radius: 18px; background: var(--surface); box-shadow: var(--shadow); }
+.indian-calendar-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.indian-calendar-heading .section-label { margin: 0; }
+.indian-calendar-month-row { display: flex; align-items: center; gap: 12px; }
+.indian-calendar-month-row h3 { min-width: 150px; margin: 0; text-align: center; font-size: clamp(1rem,2vw,1.22rem); }
+.indian-calendar-nav { width: 34px; height: 32px; border-radius: 10px; font-size: 22px; }
+.indian-calendar-link { display: block; color: inherit; text-decoration: none; border-radius: 12px; overflow: hidden; }
+.indian-calendar-weekdays, .indian-calendar-days { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); }
+.indian-calendar-weekdays { padding: 10px 0; color: var(--text); font-size: .77rem; font-weight: 800; text-align: center; background: rgba(40,100,170,.1); }
+.indian-calendar-days { gap: 4px; padding-top: 7px; }
+.calendar-day { display: grid; place-items: center; min-height: clamp(35px,5vw,48px); border-radius: 9px; background: rgba(255,255,255,.75); font-size: .9rem; transition: background .18s, transform .18s; }
+.calendar-day-empty { background: transparent; }
+.indian-calendar-link:hover .calendar-day:not(.calendar-day-empty) { background: rgba(40,100,170,.12); }
+.calendar-day.calendar-today { color: white; font-weight: 800; background: #1767ba; box-shadow: 0 3px 9px rgba(23,103,186,.3); }
+.indian-calendar-link:focus-visible { outline: 3px solid #1767ba; outline-offset: 3px; }
+@media(max-width:620px) {
+ .service-category-heading { padding-right: 88px; }
+ .service-carousel-controls { right: 0; top: 0; gap: 6px; }
+ .service-arrow-3d { width: 35px; height: 34px; border-radius: 10px; font-size: 22px; }
+ .indian-calendar-heading { align-items: flex-start; flex-direction: column; }
+ .indian-calendar-month-row { align-self: stretch; justify-content: space-between; }
+ .indian-calendar-month-row h3 { flex: 1; min-width: 0; }
+ .calendar-day { min-height: 36px; font-size: .82rem; }
+}
+@media(prefers-reduced-motion:reduce) { .service-arrow-3d,.indian-calendar-nav,.calendar-day { transition:none; } }

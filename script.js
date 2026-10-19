@@ -897,12 +897,13 @@ if (dropdownBtn && dropdownMenu) {
 })();
 
 
-/* Official portal rows: gentle auto-glide plus accessible manual arrows. */
+/* Official portal rows: alternating auto-glide and accessible manual arrows. */
 (() => {
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  document.querySelectorAll('.official-carousel-row').forEach(row => {
+  document.querySelectorAll('.official-carousel-row').forEach((row, index) => {
     const viewport = row.querySelector('.official-links-viewport');
     if (!viewport) return;
+    const direction = index % 2 === 0 ? 1 : -1;
     let paused = false;
     let resumeTimer;
     const pause = () => { paused = true; };
@@ -914,34 +915,93 @@ if (dropdownBtn && dropdownMenu) {
     row.addEventListener('pointerleave', () => { if (!row.contains(document.activeElement)) paused = false; });
     row.addEventListener('focusin', pause);
     row.addEventListener('focusout', resumeSoon);
-
     row.querySelectorAll('[data-official-scroll]').forEach(button => {
       button.addEventListener('click', () => {
-        const direction = Number(button.dataset.officialScroll) < 0 ? -1 : 1;
+        const stepDirection = Number(button.dataset.officialScroll) < 0 ? -1 : 1;
         const step = Math.max(250, Math.round(viewport.clientWidth * 0.72));
         const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-        if (direction > 0 && viewport.scrollLeft >= maxScroll - 8) {
-          viewport.scrollTo({ left: 0, behavior: 'smooth' });
-        } else if (direction < 0 && viewport.scrollLeft <= 8) {
-          viewport.scrollTo({ left: maxScroll, behavior: 'smooth' });
-        } else {
-          viewport.scrollBy({ left: direction * step, behavior: 'smooth' });
-        }
+        const target = viewport.scrollLeft + stepDirection * step;
+        viewport.scrollTo({ left: target > maxScroll - 8 && stepDirection > 0 ? 0 : target < 8 && stepDirection < 0 ? maxScroll : target, behavior: 'smooth' });
         paused = true;
         clearTimeout(resumeTimer);
         resumeTimer = setTimeout(() => { paused = false; }, 4200);
       });
     });
-
-    const glide = () => {
-      if (!reducedMotion && !paused && document.visibilityState === 'visible' &&
-          viewport.scrollWidth > viewport.clientWidth + 8) {
-        const maxScroll = viewport.scrollWidth - viewport.clientWidth;
-        if (viewport.scrollLeft >= maxScroll - 1) viewport.scrollLeft = 0;
-        else viewport.scrollLeft = Math.min(maxScroll, viewport.scrollLeft + 0.28);
+    const setInitialDirection = () => {
+      if (direction < 0 && viewport.scrollWidth > viewport.clientWidth + 8 && viewport.scrollLeft < 2) {
+        viewport.scrollLeft = viewport.scrollWidth - viewport.clientWidth;
       }
-      window.requestAnimationFrame(glide);
     };
-    window.requestAnimationFrame(glide);
+    requestAnimationFrame(setInitialDirection);
+    const glide = () => {
+      if (!reducedMotion && !paused && document.visibilityState === 'visible' && viewport.scrollWidth > viewport.clientWidth + 8) {
+        const maxScroll = viewport.scrollWidth - viewport.clientWidth;
+        if (direction > 0) viewport.scrollLeft = viewport.scrollLeft >= maxScroll - 1 ? 0 : Math.min(maxScroll, viewport.scrollLeft + 0.28);
+        else viewport.scrollLeft = viewport.scrollLeft <= 1 ? maxScroll : Math.max(0, viewport.scrollLeft - 0.28);
+      }
+      requestAnimationFrame(glide);
+    };
+    requestAnimationFrame(glide);
   });
+})();
+
+/* 3D controls let visitors nudge each continuously moving service row. */
+(() => {
+  document.querySelectorAll('.service-category').forEach(category => {
+    const marquee = category.querySelector('.service-marquee');
+    const track = marquee && marquee.querySelector('.service-marquee-track');
+    if (!marquee || !track) return;
+    category.querySelectorAll('[data-service-scroll]').forEach(button => {
+      button.addEventListener('click', () => {
+        const animation = track.getAnimations().find(item => item.playState !== 'idle');
+        if (!animation) return;
+        const direction = Number(button.dataset.serviceScroll) || 1;
+        const visual = marquee.dataset.direction === 'right' ? -1 : 1;
+        animation.pause();
+        animation.currentTime = Math.max(0, Number(animation.currentTime || 0) - direction * visual * 4800);
+        animation.play();
+        track.style.animationPlayState = 'running';
+      });
+    });
+  });
+})();
+
+/* Local Indian month calendar; the calendar grid itself opens the official court holiday list. */
+(() => {
+  const monthNode = document.getElementById('indianCalendarMonth');
+  const weekdaysNode = document.getElementById('indianCalendarWeekdays');
+  const daysNode = document.getElementById('indianCalendarDays');
+  if (!monthNode || !weekdaysNode || !daysNode) return;
+  const todayParts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(new Date());
+  const part = type => Number(todayParts.find(item => item.type === type)?.value || 1);
+  let cursor = new Date(Date.UTC(part('year'), part('month') - 1, 1));
+  const weekdayNames = {
+    en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    hi: ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि']
+  };
+  const render = () => {
+    const lang = document.documentElement.lang === 'hi' ? 'hi' : 'en';
+    monthNode.textContent = new Intl.DateTimeFormat(lang === 'hi' ? 'hi-IN' : 'en-IN', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(cursor);
+    weekdaysNode.innerHTML = weekdayNames[lang].map(day => '<span>' + day + '</span>').join('');
+    daysNode.innerHTML = '';
+    const year = cursor.getUTCFullYear(), month = cursor.getUTCMonth();
+    const offset = new Date(Date.UTC(year, month, 1)).getUTCDay();
+    const count = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+    const numberFormat = new Intl.NumberFormat(lang === 'hi' ? 'hi-IN' : 'en-IN');
+    for (let i = 0; i < offset; i++) daysNode.appendChild(document.createElement('span')).className = 'calendar-day calendar-day-empty';
+    for (let day = 1; day <= count; day++) {
+      const cell = document.createElement('span');
+      cell.className = 'calendar-day';
+      cell.textContent = numberFormat.format(day);
+      if (year === part('year') && month === part('month') - 1 && day === part('day')) cell.classList.add('calendar-today');
+      daysNode.appendChild(cell);
+    }
+  };
+  document.querySelectorAll('[data-calendar-month]').forEach(button => button.addEventListener('click', event => {
+    event.preventDefault();
+    cursor.setUTCMonth(cursor.getUTCMonth() + Number(button.dataset.calendarMonth));
+    render();
+  }));
+  window.setOfficialCalendarLanguage = render;
+  render();
 })();

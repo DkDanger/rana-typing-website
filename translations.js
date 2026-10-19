@@ -634,6 +634,7 @@
     document.documentElement.lang = lang;
     translateText(lang);
     if (window.setActReaderLanguage) window.setActReaderLanguage(lang);
+    if (window.setOfficialCalendarLanguage) window.setOfficialCalendarLanguage(lang);
     const button = ensureButton();
     button.textContent = lang === "en" ? "हिंदी" : "English";
     button.setAttribute("aria-label", lang === "en" ? "हिंदी में बदलें" : "Switch to English");
