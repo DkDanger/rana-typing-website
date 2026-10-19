@@ -32,7 +32,7 @@
     rel="stylesheet"
   >
 
- <link rel="stylesheet" href="styles.css?v=20261019a">
+ <link rel="stylesheet" href="styles.css?v=20261019b">
 
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -415,20 +415,27 @@
     <section class="section payment-section" id="payment" aria-labelledby="payment-title">
       <div class="container">
         <div class="payment-panel">
-          <div class="payment-copy reveal">
+          <div class="payment-heading">
             <span class="section-label">SECURE DIGITAL PAYMENT DESK</span>
             <h2 id="payment-title">Pay Using UPI</h2>
-            <p class="payment-intro">Secure digital payment desk for all RANA TYPING services. Direct transfer to our official business account.</p>
-            <div class="payment-upi"><span>Official UPI ID:</span><strong>7209366125@ptsbi</strong></div>
-            <h3>Contact Us for Final Price</h3>
-            <p class="payment-note">If your required service price is variable or requires an assessment, please verify the final amount with us on WhatsApp before transferring.</p>
-            <a class="payment-button" href="upi://pay?pa=7209366125%40ptsbi&amp;pn=Rana%20Typing&amp;cu=INR"><span aria-hidden="true">↗</span> Pay Now via UPI App</a>
           </div>
           <aside class="payment-qr-card">
+            <span class="payment-brand">RANA TYPING</span>
             <img class="payment-qr" src="https://dkdanger.github.io/rana-typing-website2/assets/paytm-qr.png" alt="Rana Typing official payment QR code" loading="lazy">
-            <h3>Scan &amp; Pay</h3>
-            <p>Open Paytm or any UPI app to scan and pay.</p>
+            <p>Scan with any UPI app</p>
           </aside>
+          <div class="payment-copy">
+            <div class="payment-upi"><span>UPI ID:</span><strong>7209366125@ptsbi</strong></div>
+            <form class="upi-payment-form" id="upiPaymentForm">
+              <label class="visually-hidden" for="paymentAmount">Enter Amount</label>
+              <div class="payment-amount-input">
+                <span aria-hidden="true">₹</span>
+                <input id="paymentAmount" name="amount" type="number" inputmode="decimal" min="1" step="0.01" placeholder="Enter Amount" aria-label="Enter Amount" required>
+              </div>
+              <button class="payment-button" type="submit"><span aria-hidden="true">▦</span><span>PROCEED TO PAY</span></button>
+            </form>
+            <p class="payment-note">Payment is processed securely by your device's native UPI application. We do not process or store payment credentials.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -1093,7 +1100,7 @@
       <p id="photoViewerCaption" class="photo-viewer-caption"></p>
     </dialog>
 
-<script src="script.js?v=20261018a"></script>
-<script src="translations.js?v=20261019a"></script>
+<script src="script.js?v=20261019b"></script>
+<script src="translations.js?v=20261019b"></script>
 </body>
 </html>
