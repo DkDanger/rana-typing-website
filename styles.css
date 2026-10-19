@@ -4180,7 +4180,7 @@ body:has(.secondary-page-back) h2 {
 :lang(hi) .services-section .center-heading h2 span,
 :lang(hi) .highlight-box h2 span,
 :lang(hi) .faq-layout .section-heading h2 span,
-:lang(hi) .legal-reference-library .center-heading h2 span {
+:lang(hi) .legal-reference-section .center-heading h2 span {
   margin-inline-start: .22em;
 }
 
@@ -4213,16 +4213,16 @@ body:has(.secondary-page-back) h2 {
 
 
 /* Match the Indian Acts heading to its original dark text color and separate its Hindi phrases. */
-.legal-reference-library .center-heading h2 {
+.legal-reference-section .center-heading h2 {
   color: var(--text);
 }
-.legal-reference-library .center-heading h2 span {
+.legal-reference-section .center-heading h2 span {
   color: inherit;
   margin-inline-start: .42em;
 }
 
 
 /* Keep exactly the source text's single normal space before the highlighted title phrase. */
-.legal-reference-library .center-heading h2 span {
+.legal-reference-section .center-heading h2 span {
   margin-inline-start: 0;
 }
