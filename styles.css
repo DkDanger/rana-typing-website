@@ -4125,3 +4125,27 @@ body:has(.secondary-page-back) h2 {
 @media (prefers-reduced-motion: reduce) {
   .official-links-track { animation: none !important; }
 }
+
+
+/* Improve readability and spacing for Hindi copy throughout the site. */
+:lang(hi) h1,
+:lang(hi) h2,
+:lang(hi) h3,
+:lang(hi) h4 {
+  letter-spacing: normal;
+  line-height: 1.3;
+}
+:lang(hi) p,
+:lang(hi) li {
+  line-height: 1.75;
+}
+:lang(hi) .service-card h3,
+:lang(hi) .service-card p,
+:lang(hi) .official-link-card,
+:lang(hi) .faq-question {
+  line-height: 1.65;
+}
+/* The gallery title continues directly into its highlighted span. */
+.premium-gallery .center-heading h2 span {
+  margin-inline-start: .14em;
+}
