@@ -162,8 +162,13 @@
       canvas.height = Math.floor(viewport.height * ratio);
       canvas.style.width = `${viewport.width}px`;
       canvas.style.height = `${viewport.height}px`;
+      const previousHeight = node.offsetHeight;
       node.style.width = `${viewport.width}px`;
       node.style.height = `${viewport.height}px`;
+      if (pageNumber < state.page) {
+        const heightDelta = viewport.height - previousHeight;
+        if (Math.abs(heightDelta) > 0.5) byId('actPdfViewport').scrollTop += heightDelta;
+      }
       const context = canvas.getContext('2d', { alpha: false });
       node.replaceChildren(canvas);
       const task = page.render({ canvasContext: context, viewport, transform: ratio === 1 ? null : [ratio, 0, 0, ratio, 0, 0], background: '#ffffff' });
