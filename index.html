@@ -427,8 +427,8 @@
                 <label class="act-page-control"><span>Page</span><input id="actPageInput" type="number" min="1" value="1" inputmode="numeric"><span>/</span><span id="actPageTotal">0</span></label>
               </div>
               <div class="act-reader-controls">
-                <button id="actPagePrevious" type="button" class="reader-control">Previous</button>
-                <button id="actPageNext" type="button" class="reader-control">Next</button>
+                <button id="actPagePrevious" type="button" class="reader-control" aria-label="Previous 10 pages" data-en="Previous 10" data-hi="10 पेज पीछे">Previous 10</button>
+                <button id="actPageNext" type="button" class="reader-control" aria-label="Next 10 pages" data-en="Next 10" data-hi="10 पेज आगे">Next 10</button>
                 <button id="actZoomOut" type="button" class="reader-control reader-zoom" aria-label="Zoom out">A−</button><span id="actZoomValue" class="reader-zoom-value">100%</span><button id="actZoomIn" type="button" class="reader-control reader-zoom" aria-label="Zoom in">A+</button>
                 <a id="actPdfDownload" class="reader-download" href="#" download>Download PDF</a>
               </div>
@@ -1133,7 +1133,7 @@
     </dialog>
 
 <script src="script.js?v=20261019o"></script>
-<script src="assets/act-reader.js?v=20261019c"></script>
+<script src="assets/act-reader.js?v=20261019d"></script>
 <script src="translations.js?v=20261019f"></script>
 </body>
 </html>
