@@ -4168,3 +4168,9 @@ body:has(.secondary-page-back) h2 {
   .nav-container { min-height: 76px; }
   .main-nav { top: 76px; max-height: calc(100vh - 76px); }
 }
+
+@media (min-width: 821px) and (max-width: 1320px) {
+  .main-nav { gap: 12px; }
+  .main-nav a,
+  .dropdown-btn { font-size: 12px; }
+}
