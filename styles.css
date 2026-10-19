@@ -3998,3 +3998,17 @@ body:has(.secondary-page-back) h2 {
   }
   .payment-qr-card { align-self: start; margin-top: 0; }
 }
+
+
+/* Clear feedback when the browser cannot open a UPI app. */
+.payment-status {
+  margin: 12px 0 0;
+  padding: 11px 13px;
+  border: 1px solid rgba(255,255,255,.38);
+  border-radius: 6px;
+  background: rgba(0,0,0,.16);
+  color: #fff;
+  font-size: .88rem;
+  line-height: 1.5;
+}
+.payment-status[hidden] { display: none; }
