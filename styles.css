@@ -4183,3 +4183,30 @@ body:has(.secondary-page-back) h2 {
 :lang(hi) .legal-reference-library .center-heading h2 span {
   margin-inline-start: .22em;
 }
+
+
+/* Keep dropdown items still while moving the pointer across the menu. */
+.dropdown-menu {
+  transform: none !important;
+  animation: none !important;
+  transform-origin: top left;
+}
+.dropdown-menu a,
+.dropdown-menu a:hover,
+.dropdown-menu a:focus-visible {
+  position: relative;
+  box-sizing: border-box;
+  transform: none !important;
+  padding-inline-start: 15px;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.dropdown-menu a::after,
+.dropdown-menu a:hover::after {
+  display: none !important;
+  width: 0 !important;
+}
+.dropdown-menu a:hover,
+.dropdown-menu a:focus-visible {
+  background-color: #edf2f8;
+  color: var(--primary);
+}
