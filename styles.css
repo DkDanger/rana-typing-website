@@ -446,6 +446,60 @@ button {
   box-shadow: 0 35px 80px rgba(23, 61, 43, 0.25);
 }
 
+.hero-orb-mark {
+  position: absolute;
+  z-index: 1;
+  top: -20px;
+  right: -20px;
+  width: 140px;
+  height: 140px;
+  display: grid;
+  place-items: center;
+  color: #e8b74e;
+  font-family: "Manrope", sans-serif;
+  font-size: 116px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow:
+    0 0 12px rgba(238, 185, 74, 0.88),
+    0 0 30px rgba(238, 185, 74, 0.62),
+    0 0 58px rgba(255, 70, 79, 0.36);
+  animation: heroOrbHeartbeat 1.45s ease-in-out infinite;
+  transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes heroOrbHeartbeat {
+  0%, 100% {
+    color: #e8b74e;
+    text-shadow:
+      0 0 12px rgba(238, 185, 74, 0.84),
+      0 0 28px rgba(238, 185, 74, 0.56),
+      0 0 48px rgba(255, 70, 79, 0.28);
+    scale: 1;
+  }
+  42% {
+    color: #ff5964;
+    text-shadow:
+      0 0 15px rgba(255, 89, 100, 0.95),
+      0 0 34px rgba(255, 89, 100, 0.78),
+      0 0 62px rgba(232, 183, 78, 0.42);
+    scale: 1.12;
+  }
+  58% {
+    color: #f2c35d;
+    scale: 1.04;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb-mark {
+    animation: none;
+    transition: none;
+  }
+}
+
 .hero-card::before {
   content: "";
 
