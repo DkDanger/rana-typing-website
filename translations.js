@@ -2,6 +2,11 @@
 (() => {
   "use strict";
   const translations = {
+  "Explore provisions of the new Indian criminal law.": "नई भारतीय आपराधिक संहिता के प्रावधानों को पढ़ें।",
+  "Find procedural provisions and legal references.": "आपराधिक प्रक्रिया के प्रावधान और कानूनी संदर्भ देखें।",
+  "Move cards left": "कार्ड बाईं ओर करें",
+  "Move cards right": "कार्ड दाईं ओर करें",
+
   "Home": "होम",
   "About": "हमारे बारे में",
   "Services": "सेवाएँ",
