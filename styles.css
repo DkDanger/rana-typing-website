@@ -4306,3 +4306,11 @@ body:has(.secondary-page-back) h2 {
   .floating-app-download:active { transform: translateY(4px); box-shadow: 0 2px 0 #075e31, 0 5px 12px rgba(0,0,0,.2), inset 0 1px 1px rgba(255,255,255,.35); }
   .floating-app-download:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 }
+
+
+/* Remove the fixed Android app download button from mobile screens. */
+@media (max-width: 760px) {
+  .floating-app-download {
+    display: none !important;
+  }
+}
