@@ -4329,3 +4329,28 @@ body:has(.secondary-page-back) h2 {
 /* Ensure the arrow buttons receive clicks; their parent is a non-clickable overlay. */
 .achievement-controls { pointer-events: none; }
 .achievement-controls .achievement-arrow { pointer-events: auto; position: relative; z-index: 6; }
+
+
+/* Keep the live visitor count directly underneath its heading. */
+.visitor-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.visitor-counter p {
+  margin: 0;
+}
+.visitor-counter > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  line-height: 0;
+}
+.visitor-counter > a img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
