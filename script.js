@@ -606,7 +606,7 @@ if (dropdownBtn && dropdownMenu) {
 
   function schedule() {
     clearTimeout(timer);
-    if (!document.hidden && !moving) timer = setTimeout(() => move(1), 1500);
+    if (!document.hidden && !moving) timer = setTimeout(() => move(1), 650);
   }
 
   function normalize() {
@@ -629,7 +629,7 @@ if (dropdownBtn && dropdownMenu) {
     moving = true;
     current += direction;
     position(true);
-    fallbackTimer = setTimeout(finish, 1000);
+    fallbackTimer = setTimeout(finish, 750);
   }
 
   track.addEventListener('transitionend', event => {
@@ -658,11 +658,12 @@ if (dropdownBtn && dropdownMenu) {
     const group = track?.querySelector('.service-marquee-group');
     if (!track || !group || !group.children.length) return;
     let duplicate = null;
-    const durations = [43, 48, 40];
     const direction = marquee.dataset.direction || (index === 1 ? 'right' : 'left');
-    track.style.setProperty('--service-marquee-duration', (durations[index] || 44) + 's');
     const update = () => {
-      const overflow = group.scrollWidth > marquee.clientWidth + 1;
+      const groupWidth = group.getBoundingClientRect().width || group.scrollWidth;
+      const overflow = groupWidth > marquee.clientWidth + 1;
+      /* Keep the loop continuous: duration follows the real card-row width. */
+      track.style.setProperty('--service-marquee-duration', Math.max(18, groupWidth / 90) + 's');
       category?.classList.toggle('has-overflow', overflow);
       if (overflow && !reducedMotion) {
         if (!duplicate) {
@@ -990,7 +991,7 @@ if (dropdownBtn && dropdownMenu) {
           duplicate.querySelectorAll('img').forEach(img => { img.alt = ''; });
           track.appendChild(duplicate);
         }
-        const duration = Math.max(22, group.scrollWidth / 65);
+        const duration = Math.max(18, group.getBoundingClientRect().width / 90);
         track.style.setProperty('--official-marquee-duration', duration + 's');
         track.style.animation = 'officialCardsMove var(--official-marquee-duration) linear infinite';
         track.style.animationDirection = direction === 'right' ? 'reverse' : 'normal';
