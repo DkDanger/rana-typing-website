@@ -4325,3 +4325,7 @@ body:has(.secondary-page-back) h2 {
 .official-links-group {
   flex: 0 0 auto;
 }
+
+/* Ensure the arrow buttons receive clicks; their parent is a non-clickable overlay. */
+.achievement-controls { pointer-events: none; }
+.achievement-controls .achievement-arrow { pointer-events: auto; position: relative; z-index: 6; }
