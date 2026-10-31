@@ -4314,3 +4314,14 @@ body:has(.secondary-page-back) h2 {
     display: none !important;
   }
 }
+
+
+/* Seamless card loops: no extra spacing between the last and first repeated cards. */
+.service-marquee-track,
+.official-links-track {
+  gap: 0 !important;
+}
+.service-marquee-group,
+.official-links-group {
+  flex: 0 0 auto;
+}
